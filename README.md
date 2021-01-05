@@ -40,5 +40,5 @@ pip install -r requirements.txt
 7. Run application
 
 ```console
-pip install -r requirements.txt
+python3 bot.py
 ```
