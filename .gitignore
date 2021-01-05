@@ -128,3 +128,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# My Stuff
+my*
+
+# Keys
+*key*
