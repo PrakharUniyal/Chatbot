@@ -1,5 +1,7 @@
 import logging
 from telegram.ext import Updater,CommandHandler,MessageHandler,Filters, Dispatcher
+from telegram import ReplyKeyboardMarkup
+
 #enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', 
                     level=logging.INFO)
@@ -11,6 +13,11 @@ TOKEN = "1531582165:AAHNtmQ4lyWZ55Rkf0Hs9KxzcB0woGGeX0E"
 
 url = "https://cache.careers360.mobi/media/article_images/2020/5/12/iit-mandi_625x300_1530963089382.jpg"
 
+topics_keyboard = [
+    ['Programming Club', 'Heuristics Club'], 
+    ['Robotronics Club', 'Space Technology and Astronomy Cell', 'Yantrik Club'], 
+    ['Entrepreneurship Cell', 'Nirmaan Club', 'Literary Society']
+]
 
 
 def start(update, context):
@@ -19,6 +26,10 @@ def start(update, context):
 	reply = "Hi! {}".format(author)
 	# context.bot.send_message(chat_id = update.effective_chat.id,text = reply)
 	context.bot.send_photo(chat_id = update.effective_chat.id, photo=url)
+
+def clubs(update,context):
+    context.bot.send_message(chat_id=update.effective_chat.id, text="Choose Club/Society", 
+        reply_markup=ReplyKeyboardMarkup(keyboard=topics_keyboard, one_time_keyboard=True))
 
 def _help(update,context):
 	help_text = "Hey! This is a help text"
@@ -46,6 +57,7 @@ def main():
 
 	dp = updater.dispatcher
 	dp.add_handler(CommandHandler("start", start))
+	dp.add_handler(CommandHandler("clubs", clubs))
 	dp.add_handler(CommandHandler("help", _help))
 	dp.add_handler(MessageHandler(Filters.text, echo_text))
 	dp.add_handler(MessageHandler(Filters.sticker, echo_sticker))
