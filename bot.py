@@ -1,7 +1,9 @@
 import logging
 from telegram.ext import Updater,CommandHandler,MessageHandler,Filters, Dispatcher
+from utils import get_reply
+
 #enable logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', 
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -14,21 +16,25 @@ url = "https://cache.careers360.mobi/media/article_images/2020/5/12/iit-mandi_62
 
 
 def start(update, context):
-	print(update)
-	author = update.message.from_user.first_name
-	reply = "Hi! {}".format(author)
-	# context.bot.send_message(chat_id = update.effective_chat.id,text = reply)
-	context.bot.send_photo(chat_id = update.effective_chat.id, photo=url)
+    print(update)
+    author = update.message.from_user.first_name
+    reply = "Hi! {}".format(author)
+    # context.bot.send_message(chat_id = update.effective_chat.id,text = reply)
+    context.bot.send_photo(chat_id = update.effective_chat.id, photo=url)
 
 def _help(update,context):
-	help_text = "Hey! This is a help text"
-	context.bot.send_message(chat_id = update.effective_chat.id,text = help_text)
+    help_text = "Hey! This is a help text"
+    context.bot.send_message(chat_id = update.effective_chat.id,text = help_text)
 
-def echo_text(update,context):
-	reply = update.message.text
-	author = update.message.from_user.first_name
-	print("Message typed by :",author," is -->",reply)
-	context.bot.send_message(chat_id=update.effective_chat.id,text=reply)
+def dialogflow_connector(update,context):
+    intent, reply = get_reply(update.message.text, update.message.chat_id)
+    if intent == "club_info":
+        if reply!="":
+            context.bot.send_message(chat_id=update.message.chat_id, text="You would like to know about "+reply+"? Sure I can tell you everything about "+reply+".")
+        else:
+            context.bot.send_message(chat_id=update.message.chat_id, text="Sorry I don't know about that :(")
+    else:
+        context.bot.send_message(chat_id=update.message.chat_id, text=reply)
 
 def echo_sticker(update,context):
     """callback function for sticker message handler"""
@@ -42,19 +48,19 @@ def error(update,context):
 
 
 def main():
-	updater = Updater(TOKEN)
+    updater = Updater(TOKEN)
 
-	dp = updater.dispatcher
-	dp.add_handler(CommandHandler("start", start))
-	dp.add_handler(CommandHandler("help", _help))
-	dp.add_handler(MessageHandler(Filters.text, echo_text))
-	dp.add_handler(MessageHandler(Filters.sticker, echo_sticker))
-	dp.add_error_handler(error)
+    dp = updater.dispatcher
+    dp.add_handler(CommandHandler("start", start))
+    dp.add_handler(CommandHandler("help", _help))
+    dp.add_handler(MessageHandler(Filters.text, dialogflow_connector))
+    dp.add_handler(MessageHandler(Filters.sticker, echo_sticker))
+    dp.add_error_handler(error)
 
 
-	updater.start_polling()
-	logger.info("Started Polling")
-	updater.idle()
+    updater.start_polling()
+    logger.info("Started Polling")
+    updater.idle()
 
 if __name__ == "__main__":
-	main() 
+    main()
