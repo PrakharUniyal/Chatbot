@@ -37,7 +37,17 @@ source myvenv/bin/activate
 pip install -r requirements.txt
 ```
 
-7. Run application
+7. Generate Public URL for Webhook using ngrok
+
+ - Run ngrok from command line (from the place where ngrok executable is stored)
+
+```console
+./ngrok http 8443
+```
+Copy the HTTPS Forwarding URL and Replace in [Code](https://github.com/PrakharUniyal/Chatbot/blob/main/bot.py#L82)
+
+
+8. Run application
 
 ```console
 python3 bot.py
