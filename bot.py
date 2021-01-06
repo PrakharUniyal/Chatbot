@@ -12,16 +12,17 @@ logger = logging.getLogger(__name__)
 
 
 #Telegram Bot token
-#TOKEN = "1531582165:AAHNtmQ4lyWZ55Rkf0Hs9KxzcB0woGGeX0E"
-TOKEN = "1546162713:AAEnv2MvukJma18_GuVqCF92NUaFYITwlBc"
+TOKEN = "1474907865:AAGqLgIV9keqdeeUVWNwO2svN2uFqx-kwLs"
 
-url = "https://cache.careers360.mobi/media/article_images/2020/5/12/iit-mandi_625x300_1530963089382.jpg"
+url = "https://i.ibb.co/8NbCyb9/campus.jpg"
 
 topics_keyboard = [
     ['Programming Club', 'Heuristics Club'], 
     ['Robotronics Club', 'Space Technology and Astronomy Cell', 'Yantrik Club'], 
     ['Entrepreneurship Cell', 'Nirmaan Club', 'Literary Society']
 ]
+
+capt = "Welcome to IIT Mandi!, Beautiful Campus is worth the wait🙂"
 
 app = Flask(__name__)
 
@@ -45,8 +46,7 @@ def start(update, context):
     print(update)
     author = update.message.from_user.first_name
     reply = "Hi! {}".format(author)
-    # context.bot.send_message(chat_id = update.effective_chat.id,text = reply)
-    context.bot.send_photo(chat_id = update.effective_chat.id, photo=url)
+    context.bot.send_photo(chat_id = update.effective_chat.id, photo=url2,caption=capt)
 
 def clubs(update,context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="Choose Club/Society", 
@@ -78,8 +78,9 @@ def error(update,context):
 
 if __name__ == "__main__":
     #updater = Updater(TOKEN)
+    url_for_webhook = "https://3aa62d0ccbd0.ngrok.io/"
     bot = Bot(TOKEN)
-    bot.set_webhook("https://e64444a06b1c.ngrok.io/" + TOKEN)
+    bot.set_webhook(url_for_webhook + TOKEN)
 
     dp = Dispatcher(bot,None)
     dp.add_handler(CommandHandler("start", start))
@@ -93,6 +94,3 @@ if __name__ == "__main__":
     #updater.start_polling()
     #logger.info("Started Polling")
     #updater.idle()
-
-
-
