@@ -1,6 +1,7 @@
 import logging
+from flask import Flask, request
 from telegram.ext import Updater,CommandHandler,MessageHandler,Filters, Dispatcher
-from telegram import ReplyKeyboardMarkup
+from telegram import ReplyKeyboardMarkup,Bot,Update
 from utils import get_reply
 
 
@@ -11,7 +12,8 @@ logger = logging.getLogger(__name__)
 
 
 #Telegram Bot token
-TOKEN = "1531582165:AAHNtmQ4lyWZ55Rkf0Hs9KxzcB0woGGeX0E"
+#TOKEN = "1531582165:AAHNtmQ4lyWZ55Rkf0Hs9KxzcB0woGGeX0E"
+TOKEN = "1546162713:AAEnv2MvukJma18_GuVqCF92NUaFYITwlBc"
 
 url = "https://cache.careers360.mobi/media/article_images/2020/5/12/iit-mandi_625x300_1530963089382.jpg"
 
@@ -20,6 +22,23 @@ topics_keyboard = [
     ['Robotronics Club', 'Space Technology and Astronomy Cell', 'Yantrik Club'], 
     ['Entrepreneurship Cell', 'Nirmaan Club', 'Literary Society']
 ]
+
+app = Flask(__name__)
+
+
+@app.route('/')
+def index():
+    return "Hello!"
+
+
+@app.route(f'/{TOKEN}', methods=['GET', 'POST'])
+def webhook():
+    """webhook view which receives updates from telegram"""
+    # create update object from json-format request data
+    update = Update.de_json(request.get_json(), bot)
+    # process update
+    dp.process_update(update)
+    return "ok"
 
 
 def start(update, context):
@@ -57,11 +76,12 @@ def error(update,context):
     """callback function for error handler"""
     logger.error("Update '%s' caused error '%s'", update, context.error)
 
+if __name__ == "__main__":
+    #updater = Updater(TOKEN)
+    bot = Bot(TOKEN)
+    bot.set_webhook("https://e64444a06b1c.ngrok.io/" + TOKEN)
 
-def main():
-    updater = Updater(TOKEN)
-
-    dp = updater.dispatcher
+    dp = Dispatcher(bot,None)
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("help", _help))
     dp.add_handler(CommandHandler("clubs", clubs))
@@ -69,10 +89,10 @@ def main():
     dp.add_handler(MessageHandler(Filters.sticker, echo_sticker))
     dp.add_error_handler(error)
 
+    app.run(port=8443)
+    #updater.start_polling()
+    #logger.info("Started Polling")
+    #updater.idle()
 
-    updater.start_polling()
-    logger.info("Started Polling")
-    updater.idle()
 
-if __name__ == "__main__":
-    main()
+
