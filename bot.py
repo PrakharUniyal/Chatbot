@@ -56,13 +56,38 @@ def _help(update,context):
     help_text = "Hey! This is a help text"
     context.bot.send_message(chat_id = update.effective_chat.id,text = help_text)
 
+def location_handler(update,context):
+    print(update)
+    chandi = np.array((30.741482, 76.768066))
+    delhi = np.array((28.644800, 77.216721))
+    mumbai = np.array((19.076090, 72.877426))
+    user = np.array((update.message.location.latitude, update.message.location.longitude))
+    print(user)
+
+    chd = np.linalg.norm(chandi - user)
+    ded = np.linalg.norm(delhi - user)
+    mumd = np.linalg.norm(mumbai - user)
+    if (mumd < ded and mumd < chd):
+        context.bot.send_message(chat_id=update.message.chat_id,
+                                 text="Take a train till Mumbai then a flight to Chandigarh and then a bus from Chandigarh")
+    elif (chd < mumd and chd < ded):
+        context.bot.send_message(chat_id=update.message.chat_id,
+                                 text="Take a train till Chandigarh  then a bus from Chandigarh")
+    else:
+        context.bot.send_message(chat_id=update.message.chat_id, text="Take a train till Delhi then a bus from Delhi")
+
+
 def dialogflow_connector(update,context):
     intent, reply = get_reply(update.message.text, update.message.chat_id)
+
     if intent == "club_info":
         if reply!="":
             context.bot.send_message(chat_id=update.message.chat_id, text="You would like to know about "+reply+"? Sure I can tell you everything about "+reply+".")
         else:
             context.bot.send_message(chat_id=update.message.chat_id, text="Sorry I don't know about that :(")
+    elif(intent=="reachcollege"):
+        print("collegereach")
+        context.bot.send_message(chat_id=update.message.chat_id, text="Please send your location")
     else:
         context.bot.send_message(chat_id=update.message.chat_id, text=reply)
 
@@ -88,6 +113,7 @@ if __name__ == "__main__":
     dp.add_handler(CommandHandler("clubs", clubs))
     dp.add_handler(MessageHandler(Filters.text, dialogflow_connector))
     dp.add_handler(MessageHandler(Filters.sticker, echo_sticker))
+    dp.add_handler(MessageHandler(Filters.location,location_handler))
     dp.add_error_handler(error)
 
     app.run(port=8443)

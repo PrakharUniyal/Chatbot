@@ -16,8 +16,11 @@ def detect_intent_from_text(text, session_id, language_code='en'):
 
 def get_reply(query, chat_id):
     response = detect_intent_from_text(query, chat_id)
+    intent=response.intent.display_name
 
-    if response.intent.display_name == 'club_info':
-        return "club_info", response.parameters["clubs"]
+    if  intent== 'club_info':
+        return intent, response.parameters["clubs"]
+    elif intent=='reachcollege':
+        return intent,""
     else:
         return "small_talk", response.fulfillment_text
