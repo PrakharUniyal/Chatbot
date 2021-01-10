@@ -11,10 +11,16 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 
-#Telegram Bot token
-TOKEN = "1474907865:AAGqLgIV9keqdeeUVWNwO2svN2uFqx-kwLs"
+#Telegram Bot Token
+TOKEN = "1474907865:AAGqLgIV9keqdeeUVWNwO2svN2uFqx-kwLs" #stresstest_bot
+# TOKEN = "1531582165:AAHNtmQ4lyWZ55Rkf0Hs9KxzcB0woGGeX0E" #iitmandi_bot
+# TOKEN="1546162713:AAEnv2MvukJma18_GuVqCF92NUaFYITwlBc" #KDbot
 
-url = "https://i.ibb.co/8NbCyb9/campus.jpg"
+imageurls = {
+        "campus": "https://i.ibb.co/8NbCyb9/campus.jpg"
+
+}
+
 
 topics_keyboard = [
     ['Programming Club', 'Heuristics Club'],
@@ -22,37 +28,38 @@ topics_keyboard = [
     ['Entrepreneurship Cell', 'Nirmaan Club', 'Literary Society']
 ]
 
-dict_data = {
-    "programming_club": {
-        "Code":
-"""
-The <b>Coding culture </b> is very good if we compare to new IITs.30 of our students have cleared GSOC in the past few years.If you have a nig for coding ,there will always be seniors to guide you.Hackathons and many programming activities are organised here regularly.
-- Open source culture is great at our college, as could be seen by GSoC selections. Apart from the GSoC selections, many were also selected in Linux community bridge, which is an equally prestigious program.
-You can <a href="">visit </a> here for more info 
-""",
-        "Competitive Programming": "Very nice coding. ICPC rocks.",
-        "Development": "Great development, gsoc rocks.",
-        "Laptop": "Macbook le le",
-        "Linux": "Ubuntu dalwa lo"
-    }
-}
 
-int_dict = {
+dict_intents = {
     "branchchange.prospects":
+
 """
-<b>Branch change</b> depends solely on your CGPA (Cumulative Grade Point Average)
-for the first two semesters. For a more details kindly have a   <a href="http://iitmandi.ac.in/academics/branch_change.php"> refer </a> this
-Everything is relative and dependent on your batch's performance. Although, if you study diligently (not compromising on the extra-curriculars), I believe you are good to go
-- If you attend all your classes diligently, and solve the assignments, etc. you would be able to get a cgpa above 8. Keep in mind that there is relative grading in most courses, and other students will also be working hard to get a nice cgpa. In the end it depends on your hardwork.
-- IIT Mandi offers a liberal branch change policy which allows you to study a branch of your interest. But always be prepared for the branch that you are getting.
+<b>Branch change</b> depends solely on your CGPA (Cumulative Grade Point Average)for the first two semesters. For more details <a href="http://iitmandi.ac.in/academics/branch_change.php"> refer </a> this\n
+• Everything is relative and dependent on your batch's performance. Although, if you study diligently (not compromising on the extra-curriculars), I believe you are good to go\n
+• If you attend all your classes diligently, and solve the assignments, etc. you would be able to get a cgpa above 8. Keep in mind that there is relative grading in most courses, and other students will also be working hard to get a nice cgpa. In the end it depends on your hardwork.\n
+• IIT Mandi offers a liberal branch change policy which allows you to study a branch of your interest. But always be prepared for the branch that you are getting.\n
 """,
-    "branchchange.criteria": "abcdef"
+
+    "branchchange.criteria": "Kaafi asaan hai Ho jaayegi\n",
+
+    "hostel.rooms": 
+    
+"""
+Hostels have rooms of different sizes, single, double and triple occupancy.\n
+First year students usually get a shared room.There is a common washroom for the whole floor\n
+""",
+
+    "hostel.carry": "Daily use things , A laptop etc . If you forget any thing various shops are available here",
+
+    "hostel.facilities":
+"""Facilities at hostel include a study room with a heater,common room or TV room for watching TV and playing table tennis or for group acitivites.\n
+•You also get a microwave,electric kettle on each floor\n
+"""
 }
 
-capt = "Welcome to IIT Mandi!, Beautiful Campus is worth the wait🙂"
+welcome_msg = "Welcome to IIT Mandi!, Beautiful Campus is worth the wait🙂\n"
+
 
 app = Flask(__name__)
-
 
 @app.route('/')
 def index():
@@ -68,12 +75,13 @@ def webhook():
     dp.process_update(update)
     return "ok"
 
-
 def start(update, context):
     print(update)
     author = update.message.from_user.first_name
-    reply = "Hi! {}".format(author)
-    context.bot.send_photo(chat_id = update.effective_chat.id, photo=url,caption=capt)
+    reply = "Hi! <b>{}</b>\n".format(author)
+    reply+= welcome_msg
+    context.bot.send_photo(chat_id = update.effective_chat.id, 
+                        photo=imageurls["campus"],caption=reply,parse_mode=ParseMode.HTML)
 
 def clubs(update,context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="Choose Club/Society",
@@ -105,42 +113,36 @@ def location_handler(update,context):
 
 
 def dialogflow_connector(update,context):
+    
     response = get_reply(update.message.text, update.message.chat_id)
-
     intent=response.intent.display_name
+    
+    print("--------")
+    print(response)
+    print("intent:->", intent)
+    print("--------")
 
-
-    context.bot.send_message(chat_id=update.effective_chat.id,
-                                 text=int_dict[intent],
+    if(intent in dict_intents):
+        context.bot.send_message(chat_id=update.effective_chat.id,
+                                 text= dict_intents[intent],
                                  parse_mode=ParseMode.HTML)
-    return
-
-    if (response.action[:5]=="small"):
-        print(response)
+    else:
         context.bot.send_message(chat_id=update.effective_chat.id,
                                  text=response.fulfillment_text,
                                  parse_mode=ParseMode.HTML)
-    else:
-        entity = list(response.parameters.keys())[0]
-        string_val = list(response.parameters[entity].values)[0].string_value
-        print(entity, string_val)
-        # # string_val = response.parameters[response.pa]
-        context.bot.send_message(chat_id=update.effective_chat.id, text=dict_data[entity][string_val], parse_mode=ParseMode.HTML)
-
-
+    
 def echo_sticker(update,context):
     """callback function for sticker message handler"""
     context.bot.send_sticker(chat_id=update.effective_chat.id,
                      sticker=update.message.sticker.file_id)
-
 
 def error(update,context):
     """callback function for error handler"""
     logger.error("Update '%s' caused error '%s'", update, context.error)
 
 if __name__ == "__main__":
-    #updater = Updater(TOKEN)
-    url_for_webhook = "https://c458ab7e343b.ngrok.io/"
+
+    url_for_webhook = "https://a25cbfaef850.ngrok.io/"
     bot = Bot(TOKEN)
     bot.set_webhook(url_for_webhook + TOKEN)
 
@@ -154,6 +156,3 @@ if __name__ == "__main__":
     dp.add_error_handler(error)
 
     app.run(port=8443,debug=True)
-    #updater.start_polling()
-    #logger.info("Started Polling")
-    #updater.idle()
