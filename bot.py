@@ -12,10 +12,10 @@ logger = logging.getLogger(__name__)
 
 
 #Telegram Bot Token
-TOKEN = "1474907865:AAGqLgIV9keqdeeUVWNwO2svN2uFqx-kwLs" #stresstest_bot
+# TOKEN = "1474907865:AAGqLgIV9keqdeeUVWNwO2svN2uFqx-kwLs" #stresstest_bot
 # TOKEN = "1531582165:AAHNtmQ4lyWZ55Rkf0Hs9KxzcB0woGGeX0E" #iitmandi_bot
 # TOKEN="1546162713:AAEnv2MvukJma18_GuVqCF92NUaFYITwlBc" #KDbot
-
+TOKEN = "1599589352:AAGzf5C0EjT53FsZH63_mfcdlXbJh_vmEs8" #prakharuniyalbot
 imageurls = {
         "campus": "https://i.ibb.co/8NbCyb9/campus.jpg",
         "tripleroom_url" : "https://scontent.fpnq4-1.fna.fbcdn.net/v/t1.0-9/122140166_815645489197544_8328917430186400303_o.jpg?_nc_cat=111&ccb=2&_nc_sid=dbeb18&_nc_ohc=_qjpA4PQQCoAX9sLkGC&_nc_oc=AQkOWMHtD18797KPIq3SchTfFDnk2x4r-r1UwXiNeFDS1J12HwhL90DjzzmoKLktkz8&_nc_ht=scontent.fpnq4-1.fna&oh=800ac0b364d58711717baeaa4b4bfc24&oe=60219B0C",
@@ -257,10 +257,9 @@ def dialogflow_connector(update,context):
         context.bot.send_message(chat_id=update.effective_chat.id,
                                  text= reply_text,
                                  parse_mode=ParseMode.HTML)
-        if(imgrefs):
-            for imgref in imgrefs:
-                context.bot.send_photo(chat_id=update.effective_chat.id, photo=dict_intents[intent][1])
-        
+        for imgref in imgrefs:
+            context.bot.send_photo(chat_id=update.effective_chat.id, photo=imgref)
+
     else:
         context.bot.send_message(chat_id=update.effective_chat.id,
                                  text=response.fulfillment_text,
@@ -277,7 +276,8 @@ def error(update,context):
 
 if __name__ == "__main__":
 
-    url_for_webhook = "https://6df0f97fc317.ngrok.io/"
+    # url_for_webhook = "https://6df0f97fc317.ngrok.io/"
+    url_for_webhook = "https://25f781865b0e.ngrok.io/"
     bot = Bot(TOKEN)
     bot.set_webhook(url_for_webhook + TOKEN)
 
