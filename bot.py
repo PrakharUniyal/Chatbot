@@ -146,8 +146,64 @@ by faculty and students
         """
         placements are excellent
         """
-    ]
-​
+    ],
+    "academics.workingdays":
+    [
+        """
+        Usually we do not have classes on saturdays and sundays but sometimes holidays in the middle of the week are compensated by shifting that day's time table schedule to a weekend day.
+        """
+    ],
+    "academics.companycg":
+    [
+        """
+        CGPA criteria for placement/internship varies from company to company. An ideal CGPA to have is 8.5 or greater.\n
+        Most of the companies allow for a CGPA greater than 8.
+        """
+    ],
+    "academics.companycg":
+    [
+        """
+        CGPA criteria for placement/internship varies from company to company. An ideal CGPA to have is 8.5 or greater.\n
+        Most of the companies allow for a CGPA greater than 8.
+        """
+    ],
+    "academics.professors":
+    [
+        """
+        It varies from professor to professor. Some are of very good nature and empathetic but some are a bit orthodox and expect a lot from their students.
+        """
+    ],
+    "academics.exams":
+    [
+        """
+        Grading pattern varies across courses.\n
+        But most of the courses including the ones in first year have 2 quizzes and one end-sem examination along with some weightage for assignments/practicals/mini-projects.
+        """
+    ],
+    "academics.stationery":
+    [
+        """
+        You don't need to buy any books or other stationery related to your courses.\n
+        We have a huge collection at the library which is sufficient for all the students of a course.\n
+        You can also find PDF version of books available on the internet.\n
+        Other stationery items can easily be purchased at the local store or ordered online.
+        """
+    ],
+    "academics.stationery":
+    [
+        """
+        You don't need to buy any books or other stationery related to your courses.\n
+        We have a huge collection at the library which is sufficient for all the students of a course.\n
+        You can also find PDF version of books available on the internet.\n
+        Other stationery items can easily be purchased at the local store or ordered online.
+        """
+    ],
+    "academics.studying":
+    [
+        """
+        It depend on the person. But combining classes, assignments, quizzes and tests it takes around 50-55 hours every week.
+        """
+    ],
 }
 ​
 welcome_msg = "Welcome to IIT Mandi!, Beautiful Campus is worth the wait🙂\n"
