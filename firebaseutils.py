@@ -1,20 +1,10 @@
-import logging
-from flask import Flask, request
-from telegram.ext import Updater,CommandHandler,MessageHandler,Filters, Dispatcher
-from telegram import ReplyKeyboardMarkup,Bot,Update,ParseMode
-from utils import get_reply
-from firebaseutils import answers_collection
+import firebase_admin
+from firebase_admin import credentials, firestore
 
-#enable logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
-logger = logging.getLogger(__name__)
+cred = credentials.Certificate("firebase_key.json")
+firebase_admin.initialize_app(cred)
 
-
-#Telegram Bot Token
-TOKEN = "1474907865:AAGqLgIV9keqdeeUVWNwO2svN2uFqx-kwLs" #stresstest_bot
-# TOKEN = "1531582165:AAHNtmQ4lyWZ55Rkf0Hs9KxzcB0woGGeX0E" #iitmandi_bot
-# TOKEN="1546162713:AAEnv2MvukJma18_GuVqCF92NUaFYITwlBc" #KDbot
+db = firestore.client()
 
 imageurls = {
         "campus": "https://i.ibb.co/8NbCyb9/campus.jpg",
@@ -22,14 +12,6 @@ imageurls = {
         "doubleroom_url" : "https://scontent.fpnq4-1.fna.fbcdn.net/v/t1.0-9/122107179_3351982168247612_3874733656374962850_o.jpg?_nc_cat=111&ccb=2&_nc_sid=dbeb18&_nc_ohc=6K758cHE_JgAX_ZLsh3&_nc_ht=scontent.fpnq4-1.fna&oh=22e78e68d3b474f0894c1caab5264403&oe=60209BBC",
         "mess_url" : "https://scontent.fpnq4-1.fna.fbcdn.net/v/t1.0-9/122370919_2289019017911512_7022478130559725125_o.jpg?_nc_cat=100&ccb=2&_nc_sid=dbeb18&_nc_ohc=IRLhvHpHRY0AX8TOQ1J&_nc_ht=scontent.fpnq4-1.fna&oh=38da5aa0e4db37b35987e70fee6356f7&oe=601FFFB2"
 }
-
-
-topics_keyboard = [
-    ['Programming Club', 'Heuristics Club'],
-    ['Robotronics Club', 'Space Technology and Astronomy Cell', 'Yantrik Club'],
-    ['Entrepreneurship Cell', 'Nirmaan Club', 'Literary Society']
-]
-
 
 dict_intents = {
     "branchchange.prospects": [
@@ -183,111 +165,12 @@ dict_intents = {
     ]
 }
 
-welcome_msg = "Welcome to IIT Mandi!, Beautiful Campus is worth the wait🙂\n"
+answers_collection = db.collection(u'answers')
 
-
-app = Flask(__name__)
-
-@app.route('/')
-def index():
-    return "Hello!"
-
-
-@app.route(f'/{TOKEN}', methods=['GET', 'POST'])
-def webhook():
-    """webhook view which receives updates from telegram"""
-    # create update object from json-format request data
-    update = Update.de_json(request.get_json(), bot)
-    # process update
-    dp.process_update(update)
-    return "ok"
-
-def start(update, context):
-    print(update)
-    author = update.message.from_user.first_name
-    reply = "Hi! <b>{}</b>\n".format(author)
-    reply+= welcome_msg
-    context.bot.send_photo(chat_id = update.effective_chat.id,
-                        photo=imageurls["campus"],caption=reply,parse_mode=ParseMode.HTML)
-
-def clubs(update,context):
-    context.bot.send_message(chat_id=update.effective_chat.id, text="Choose Club/Society",
-        reply_markup=ReplyKeyboardMarkup(keyboard=topics_keyboard, one_time_keyboard=True))
-
-def _help(update,context):
-    help_text = "Hey! This is a help text"
-    context.bot.send_message(chat_id = update.effective_chat.id,text = help_text)
-
-def location_handler(update,context):
-    print(update)
-    chandi = np.array((30.741482, 76.768066))
-    delhi = np.array((28.644800, 77.216721))
-    mumbai = np.array((19.076090, 72.877426))
-    user = np.array((update.message.location.latitude, update.message.location.longitude))
-    print(user)
-
-    chd = np.linalg.norm(chandi - user)
-    ded = np.linalg.norm(delhi - user)
-    mumd = np.linalg.norm(mumbai - user)
-    if (mumd < ded and mumd < chd):
-        context.bot.send_message(chat_id=update.message.chat_id,
-                                 text="Take a train till Mumbai then a flight to Chandigarh and then a bus from Chandigarh")
-    elif (chd < mumd and chd < ded):
-        context.bot.send_message(chat_id=update.message.chat_id,
-                                 text="Take a train till Chandigarh  then a bus from Chandigarh")
-    else:
-        context.bot.send_message(chat_id=update.message.chat_id, text="Take a train till Delhi then a bus from Delhi")
-
-
-def dialogflow_connector(update,context):
-
-    response = get_reply(update.message.text, update.message.chat_id)
-    intent=response.intent.display_name
-
-    intent_response = answers_collection.document(intent).get()
-    reply_text = intent_response.get('text')
-    imgrefs = intent_response.get('imgrefs')
-
-    print("--------")
-    print(response)
-    print("intent:->", intent)
-    print("--------")
-
-    if(intent in dict_intents):
-        context.bot.send_message(chat_id=update.effective_chat.id,
-                                 text= reply_text,
-                                 parse_mode=ParseMode.HTML)
-        if(imgrefs):
-            for imgref in imgrefs:
-                context.bot.send_photo(chat_id=update.effective_chat.id, photo=dict_intents[intent][1])
-        
-    else:
-        context.bot.send_message(chat_id=update.effective_chat.id,
-                                 text=response.fulfillment_text,
-                                 parse_mode=ParseMode.HTML)
-
-def echo_sticker(update,context):
-    """callback function for sticker message handler"""
-    context.bot.send_sticker(chat_id=update.effective_chat.id,
-                     sticker=update.message.sticker.file_id)
-
-def error(update,context):
-    """callback function for error handler"""
-    logger.error("Update '%s' caused error '%s'", update, context.error)
-
-if __name__ == "__main__":
-
-    url_for_webhook = "https://6df0f97fc317.ngrok.io/"
-    bot = Bot(TOKEN)
-    bot.set_webhook(url_for_webhook + TOKEN)
-
-    dp = Dispatcher(bot,None)
-    dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CommandHandler("help", _help))
-    dp.add_handler(CommandHandler("clubs", clubs))
-    dp.add_handler(MessageHandler(Filters.text, dialogflow_connector))
-    dp.add_handler(MessageHandler(Filters.sticker, echo_sticker))
-    dp.add_handler(MessageHandler(Filters.location,location_handler))
-    dp.add_error_handler(error)
-
-    app.run(port=8443,debug=True)
+def add_data(dict_intents):
+    for key, val in dict_intents.items():
+        doc = answers_collection.document(key)
+        payload = {"text":val[0]}
+        if(len(val)>1):
+            payload["imgrefs"] = val[1:]
+        doc.set(payload)
