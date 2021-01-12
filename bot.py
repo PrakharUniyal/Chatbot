@@ -4,6 +4,8 @@ from telegram.ext import Updater,CommandHandler,MessageHandler,Filters, Dispatch
 from telegram import ReplyKeyboardMarkup,Bot,Update,ParseMode
 from utils import get_reply
 from firebaseutils import answers_collection
+import speech_recognition as sr
+import os
 
 #enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -27,6 +29,8 @@ imageurls = {
 dict_intents = set()
 for doc in answers_collection.get():
     dict_intents.add(doc.get('intent'))
+
+rec = sr.Recognizer()
 
 app = Flask(__name__)
 
@@ -86,9 +90,6 @@ def dialogflow_connector(update,context):
     response = get_reply(update.message.text, update.message.chat_id)
     intent=response.intent.display_name
 
-    intent_response = answers_collection.where('intent', '==', intent).get()[0]
-    reply_text = intent_response.get('text')
-    imgrefs = intent_response.get('imgrefs')
 
     print("--------")
     print(response)
@@ -96,6 +97,9 @@ def dialogflow_connector(update,context):
     print("--------")
 
     if(intent in dict_intents):
+        intent_response = answers_collection.where('intent', '==', intent).get()[0]
+        reply_text = intent_response.get('text')
+        imgrefs = intent_response.get('imgrefs')
         context.bot.send_message(chat_id=update.effective_chat.id,
                                  text= reply_text,
                                  parse_mode=ParseMode.HTML)
@@ -103,6 +107,54 @@ def dialogflow_connector(update,context):
             context.bot.send_photo(chat_id=update.effective_chat.id, photo=imgref)
 
     else:
+        if intent == "Default Fallback Intent":
+            f = open('logs.txt', 'a')
+            f.write(update.message.text+'\n')
+            f.close()
+        context.bot.send_message(chat_id=update.effective_chat.id,
+                                 text=response.fulfillment_text,
+                                 parse_mode=ParseMode.HTML)
+
+
+def voice_to_text(update, context):
+    chat_id = update.message.chat_id
+    file_name = str(chat_id) + '_' + str(update.message.from_user.id) + str(update.message.message_id)
+    update.message.voice.get_file().download(file_name+'.ogg')
+    os.system('ffmpeg -i '+file_name+'.ogg '+file_name+'.wav')
+    os.system('rm '+file_name+'.ogg')
+    harvard = sr.AudioFile(file_name+'.wav')
+    with harvard as source:
+        audio = rec.record(source)
+
+    message_text = rec.recognize_google(audio)
+
+    os.system('rm ' + file_name + '.wav')
+
+    response = get_reply(message_text, chat_id)
+    intent = response.intent.display_name
+
+    
+    print("--------")
+    print(response)
+    print("intent:->", intent)
+    print("--------")
+
+    if (intent in dict_intents):
+        intent_response = answers_collection.where('intent', '==', intent).get()[0]
+        reply_text = intent_response.get('text')
+        imgrefs = intent_response.get('imgrefs')
+        context.bot.send_message(chat_id=update.effective_chat.id,
+                                 text=reply_text,
+                                 parse_mode=ParseMode.HTML)
+        for imgref in imgrefs:
+            context.bot.send_photo(chat_id=update.effective_chat.id,
+                                   photo=imgref)
+
+    else:
+        if intent == "Default Fallback Intent":
+            f = open('logs.txt', 'a')
+            f.write(update.message.text+'\n')
+            f.close()
         context.bot.send_message(chat_id=update.effective_chat.id,
                                  text=response.fulfillment_text,
                                  parse_mode=ParseMode.HTML)
@@ -119,7 +171,7 @@ def error(update,context):
 
 if __name__ == "__main__":
 
-    url_for_webhook = "https://cca95ab81f4c.ngrok.io/"
+    url_for_webhook = "https://4f7e8f6e396a.ngrok.io/"
     bot = Bot(TOKEN)
     bot.set_webhook(url_for_webhook + TOKEN)
 
@@ -130,6 +182,8 @@ if __name__ == "__main__":
     dp.add_handler(MessageHandler(Filters.text, dialogflow_connector))
     dp.add_handler(MessageHandler(Filters.sticker, echo_sticker))
     dp.add_handler(MessageHandler(Filters.location,location_handler))
+    dp.add_handler(MessageHandler(Filters.voice, voice_to_text))
+    dp.add_handler(MessageHandler(Filters.audio, voice_to_text))
     dp.add_error_handler(error)
 
     app.run(port=8443,debug=True)
