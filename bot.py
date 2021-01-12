@@ -6,6 +6,7 @@ from utils import get_reply
 from firebaseutils import answers_collection
 import speech_recognition as sr
 import os
+import numpy as np
 
 #enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -36,6 +37,8 @@ for doc in answers_collection.get():
     dict_intents.add(doc.get('intent'))
 
 rec = sr.Recognizer()
+
+topics_keyboard = []
 
 app = Flask(__name__)
 
@@ -138,7 +141,7 @@ def voice_to_text(update, context):
     response = get_reply(message_text, chat_id)
     intent = response.intent.display_name
 
-    
+
     print("--------")
     print(response)
     print("intent:->", intent)
@@ -176,7 +179,7 @@ def error(update,context):
 
 if __name__ == "__main__":
 
-    url_for_webhook = "https://89da212226c6.ngrok.io/"
+    url_for_webhook = "https://5d07b404dd2e.ngrok.io/"
     bot = Bot(TOKEN)
     bot.set_webhook(url_for_webhook + TOKEN)
 
