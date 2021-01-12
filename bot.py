@@ -15,11 +15,16 @@ logger = logging.getLogger(__name__)
 
 #Telegram Bot Token
 # TOKEN = "1474907865:AAGqLgIV9keqdeeUVWNwO2svN2uFqx-kwLs" #stresstest_bot
-# TOKEN = "1531582165:AAHNtmQ4lyWZ55Rkf0Hs9KxzcB0woGGeX0E" #iitmandi_bot
+TOKEN = "1531582165:AAHNtmQ4lyWZ55Rkf0Hs9KxzcB0woGGeX0E" #iitmandi_bot
 # TOKEN="1546162713:AAEnv2MvukJma18_GuVqCF92NUaFYITwlBc" #KDbot
-TOKEN = "1599589352:AAGzf5C0EjT53FsZH63_mfcdlXbJh_vmEs8" #prakharuniyalbot
+# TOKEN = "1599589352:AAGzf5C0EjT53FsZH63_mfcdlXbJh_vmEs8" #prakharuniyalbot
 
-welcome_msg = "Welcome to IIT Mandi!, Beautiful Campus is worth the wait🙂\n"
+welcome_msg = """\n
+<b>Congratulations!</b> for qualifying <u>JEE Advanced</u>\n  
+This hard-earned laurel opens up for you the gateways of the IIT system where you can earn a BTech degree.
+Welcome to IIT Mandi!, Beautiful Campus is worth the wait🙂\n
+
+"""
 
 imageurls = {
     "campus":
@@ -171,7 +176,7 @@ def error(update,context):
 
 if __name__ == "__main__":
 
-    url_for_webhook = "https://4f7e8f6e396a.ngrok.io/"
+    url_for_webhook = "https://89da212226c6.ngrok.io/"
     bot = Bot(TOKEN)
     bot.set_webhook(url_for_webhook + TOKEN)
 
