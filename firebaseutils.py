@@ -27,9 +27,14 @@ Everything is relative and dependent on your batch's performance. Although, if y
 • IIT Mandi offers a liberal branch change policy which allows you to study a branch of your interest. But always be prepared for the branch that you are getting.
 """
     ],
-    "branchchange.criteria": ["""
-        8.3 for cse
-        """],
+    "branchchange.criteria": [
+"""
+• The student will have to be in good <b>academic standing</b>, having done the full complement of courses and having no backlog. The decision on the student’s application will be made only after the grades of the second semester are received and the CGPA at the end of the semester will be the relevant CGPA.\n
+• <u><b>Branch change</b></u> applications will be considered strictly in order of merit as established by the CGPA and only to the extent of the applicant’s choices and in the order of the preferences expressed in the application\n
+• The top- ranking student of each discipline may be awarded a branch change if she/he has a CGPA of at least 8.0.\n
+• The strength of any branch shall not be allowed to fall below a minimum strength of 20 students because of the branch change\n
+"""
+        ],
     "hostel.rooms": [
         """
 Hostels have rooms of different sizes, single, double and triple occupancy.  
@@ -40,11 +45,15 @@ There is a common washroom for the whole floor",imageurls["tripleroom_url"]  ,im
     "hostel.carry": [
         """
 
-Daily use things , A laptop etc . If you forget any thing various shops are available here\n
+• Phone/laptop : Although laptop may not be used for academic purposes in the first semester, I strongly recommend carrying one due to its other non academic uses.\n
+• Shorts,  Pajamas : Most of the time (99.9 % in my case), you won’t be wearing jeans. I recommend carrying a couple or two of shorts/pajamas for daily use.\n
+• Good quality slippers : Same goes for slippers. 99.9765 % of time you will be using slippers. You’ll rarely use shoes unless you have a pair of red chief and you want to show off, so bring good quality slippers which can bear the torture.\n
 
 Also Institute arranges vendors for the sale of hostel necessities like mattresses, pillows, pillow
 covers, bed sheets, locks, buckets, mugs etc. on Orientation day\n. 
 Local vendors are arranged for the sale of these items inside the Institute.\n 
+
+Daily use things .If you forget any thing various shops are available here\n
 """
     ],
     "hostel.facilities": [
@@ -145,14 +154,24 @@ We are improving upon ICPC year by year.\n
 Open source culture is amazing at our college as shown by GSoC selections. Apart from the GSoC selections, many were also selected in Linux community bridge, which is an equally prestigious program.\n
 <a href=”https://pc.iitmandi.co.in/icpc/hof.html”>Reference1</a>
 <a href=”https://pc.iitmandi.co.in/gsoc/”>Reference2</a>
+
+Happy coding 🙂
 """
     ],
-    "programming.compi": ["""
-        DSA karo bhaiyo
-        """],
-    "programming.os": ["""
-        Use linux over windows
-        """],
+    "programming.compi": [
+"""
+• Try to follow "C++ for dummies". Focus on first 2 units of the book \n
+• You don't need to buy the book, just download pdf version of the book from the internet\n
+Happy coding 🙂
+"""],
+
+    "programming.os": [
+"""
+• For good programming practices, you'll need to use ubuntu/unix/linux OSes\n
+• Working on linux is <b>faster and more secure</b> and comes with more support.\n
+• Please <a href = "http://blog.pc.iitmandi.co.in/Dual-Boot/">Vist</a> for proper guide \n
+"""
+],
     "programming.laptop": [
         """
 <u><b>Guidelines to buy a perfect laptop</b></u>\n
@@ -206,7 +225,9 @@ Semiconductors, HPCL and OLX People.\n
     ],
     "academics.workingdays": [
         """
-        Usually we do not have classes on saturdays and sundays but sometimes holidays in the middle of the week are compensated by shifting that day's time table schedule to a weekend day.
+• Usually we do not have classes on saturdays and sundays but sometimes holidays in the middle of the week are compensated by shifting that day's time table schedule to a weekend day\n
+• Various goverments holidays are also there\n
+<a href="http://www.iitmandi.ac.in/administration/holidays_2020.php"> Refer </a>        
         """
     ],
     "academics.companycg": [
@@ -215,12 +236,7 @@ Semiconductors, HPCL and OLX People.\n
         Most of the companies allow for a CGPA greater than 8.
         """
     ],
-    "academics.companycg": [
-        """
-        CGPA criteria for placement/internship varies from company to company. An ideal CGPA to have is 8.5 or greater.\n
-        Most of the companies allow for a CGPA greater than 8.
-        """
-    ],
+
     "academics.professors": [
         """
         It varies from professor to professor. Some are of very good nature and empathetic but some are a bit orthodox and expect a lot from their students.
@@ -240,14 +256,7 @@ Semiconductors, HPCL and OLX People.\n
         Other stationery items can easily be purchased at the local store or ordered online.
         """
     ],
-    "academics.stationery": [
-        """
-        You don't need to buy any books or other stationery related to your courses.\n
-        We have a huge collection at the library which is sufficient for all the students of a course.\n
-        You can also find PDF version of books available on the internet.\n
-        Other stationery items can easily be purchased at the local store or ordered online.
-        """
-    ],
+
     "academics.studying": [
         """
         It depend on the person. But combining classes, assignments, quizzes and tests it takes around 50-55 hours every week.
@@ -274,4 +283,4 @@ def add_data(dict_intents):
             payload["imgrefs"] = []
         answers_collection.add(payload)
 
-# add_data(dict_intents)
+add_data(dict_intents)
