@@ -4,9 +4,11 @@ from telegram.ext import Updater,CommandHandler,MessageHandler,Filters, Dispatch
 from telegram import ReplyKeyboardMarkup,Bot,Update,ParseMode
 from utils import get_reply
 from firebaseutils import answers_collection
+from location import suggest_path
 import speech_recognition as sr
 import os
 import numpy as np
+
 
 #enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -73,25 +75,15 @@ def _help(update,context):
     context.bot.send_message(chat_id = update.effective_chat.id,text = help_text)
 
 def location_handler(update,context):
-    print(update)
-    chandi = np.array((30.741482, 76.768066))
-    delhi = np.array((28.644800, 77.216721))
-    mumbai = np.array((19.076090, 72.877426))
-    user = np.array((update.message.location.latitude, update.message.location.longitude))
-    print(user)
+    print("in location handler")
+    # print(update)
+    lat = update.message.location.latitude
+    lng = update.message.location.longitude 
 
-    chd = np.linalg.norm(chandi - user)
-    ded = np.linalg.norm(delhi - user)
-    mumd = np.linalg.norm(mumbai - user)
-    if (mumd < ded and mumd < chd):
-        context.bot.send_message(chat_id=update.message.chat_id,
-                                 text="Take a train till Mumbai then a flight to Chandigarh and then a bus from Chandigarh")
-    elif (chd < mumd and chd < ded):
-        context.bot.send_message(chat_id=update.message.chat_id,
-                                 text="Take a train till Chandigarh  then a bus from Chandigarh")
-    else:
-        context.bot.send_message(chat_id=update.message.chat_id, text="Take a train till Delhi then a bus from Delhi")
+    print(lat,lng)
 
+    best_path = suggest_path(lat,lng)
+    context.bot.send_message(chat_id=update.message.chat_id,text= best_path, parse_mode=ParseMode.HTML)
 
 def dialogflow_connector(update,context):
 
@@ -125,6 +117,7 @@ def dialogflow_connector(update,context):
 
 
 def voice_to_text(update, context):
+    
     chat_id = update.message.chat_id
     file_name = str(chat_id) + '_' + str(update.message.from_user.id) + str(update.message.message_id)
     update.message.voice.get_file().download(file_name+'.ogg')
@@ -173,13 +166,18 @@ def echo_sticker(update, context):
     context.bot.send_sticker(chat_id=update.effective_chat.id,
                              sticker=update.message.sticker.file_id)
 
+def pathtoiitmandi(update,context):
+    author = update.message.from_user.first_name
+    help_text = "Hey {} ,Please share your live location through telegram\n".format(author)
+    context.bot.send_message(chat_id = update.effective_chat.id,text = help_text)
+
 def error(update,context):
     """callback function for error handler"""
     logger.error("Update '%s' caused error '%s'", update, context.error)
 
 if __name__ == "__main__":
 
-    url_for_webhook = "https://5d07b404dd2e.ngrok.io/"
+    url_for_webhook = "https://3f9534118fdb.ngrok.io/"
     bot = Bot(TOKEN)
     bot.set_webhook(url_for_webhook + TOKEN)
 
@@ -187,6 +185,7 @@ if __name__ == "__main__":
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("help", _help))
     dp.add_handler(CommandHandler("clubs", clubs))
+    dp.add_handler(CommandHandler("pathtoiitmandi", pathtoiitmandi))
     dp.add_handler(MessageHandler(Filters.text, dialogflow_connector))
     dp.add_handler(MessageHandler(Filters.sticker, echo_sticker))
     dp.add_handler(MessageHandler(Filters.location,location_handler))
