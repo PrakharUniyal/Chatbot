@@ -9,12 +9,13 @@ db = firestore.client()
 imageurls = {
     "campus":
     "https://i.ibb.co/8NbCyb9/campus.jpg",
-    "tripleroom_url":
+    "hostel.rooms":
     "https://scontent.fpnq4-1.fna.fbcdn.net/v/t1.0-9/122140166_815645489197544_8328917430186400303_o.jpg?_nc_cat=111&ccb=2&_nc_sid=dbeb18&_nc_ohc=_qjpA4PQQCoAX9sLkGC&_nc_oc=AQkOWMHtD18797KPIq3SchTfFDnk2x4r-r1UwXiNeFDS1J12HwhL90DjzzmoKLktkz8&_nc_ht=scontent.fpnq4-1.fna&oh=800ac0b364d58711717baeaa4b4bfc24&oe=60219B0C",
     "doubleroom_url":
     "https://scontent.fpnq4-1.fna.fbcdn.net/v/t1.0-9/122107179_3351982168247612_3874733656374962850_o.jpg?_nc_cat=111&ccb=2&_nc_sid=dbeb18&_nc_ohc=6K758cHE_JgAX_ZLsh3&_nc_ht=scontent.fpnq4-1.fna&oh=22e78e68d3b474f0894c1caab5264403&oe=60209BBC",
-    "mess_url":
-    "https://scontent.fpnq4-1.fna.fbcdn.net/v/t1.0-9/122370919_2289019017911512_7022478130559725125_o.jpg?_nc_cat=100&ccb=2&_nc_sid=dbeb18&_nc_ohc=IRLhvHpHRY0AX8TOQ1J&_nc_ht=scontent.fpnq4-1.fna&oh=38da5aa0e4db37b35987e70fee6356f7&oe=601FFFB2"
+    "campus.mess":
+    "https://scontent.fpnq4-1.fna.fbcdn.net/v/t1.0-9/122370919_2289019017911512_7022478130559725125_o.jpg?_nc_cat=100&ccb=2&_nc_sid=dbeb18&_nc_ohc=IRLhvHpHRY0AX8TOQ1J&_nc_ht=scontent.fpnq4-1.fna&oh=38da5aa0e4db37b35987e70fee6356f7&oe=601FFFB2",
+    "clubs.kamandprompt": "https://i.ibb.co/r2mBMvg/collage.jpg"
 }
 
 dict_intents = {
@@ -40,7 +41,7 @@ Everything is relative and dependent on your batch's performance. Although, if y
 Hostels have rooms of different sizes, single, double and triple occupancy.  
 First year students usually get a shared room.In the subsequent years, you may get a single room.
 There is a common washroom for the whole floor
-""", imageurls["tripleroom_url"], imageurls["doubleroom_url"]
+""", imageurls["hostel.rooms"]
     ],
     "hostel.carry": [
         """
@@ -83,7 +84,7 @@ We have a bus stop in the north campus near the A10 building and in the south ca
         """
 We have several messes in our campus D1,D2 in the south campus and Pine,Oak in the North Campus."
 The mess food is also good
-""", imageurls["mess_url"]
+""", imageurls["campus.mess"]
     ],
     "fees": ["""
 https://iitmandi.ac.in/academics/fees.php
@@ -212,42 +213,151 @@ Semiconductors, HPCL and OLX People.\n
     ],
     "academics.companycg": [
         """
-        CGPA criteria for placement/internship varies from company to company. An ideal CGPA to have is 8.5 or greater.\n
-        Most of the companies allow for a CGPA greater than 8.
+CGPA criteria for placement/internship varies from company to company. An ideal CGPA to have is 8.5 or greater.\n
+Most of the companies allow for a CGPA greater than 8\n
         """
     ],
     "academics.professors": [
         """
-        It varies from professor to professor. Some are of very good nature and empathetic but some are a bit orthodox and expect a lot from their students.
+It varies from professor to professor. Some are of very good nature and empathetic but some are a bit orthodox and expect a lot from their students.
         """
     ],
     "academics.exams": [
         """
-        Grading pattern varies across courses.\n
-        But most of the courses including the ones in first year have 2 quizzes and one end-sem examination along with some weightage for assignments/practicals/mini-projects.
+Grading pattern varies across courses.\n
+But most of the courses including the ones in first year have 2 quizzes and one end-sem examination along with some weightage for assignments/practicals/mini-projects.
         """
     ],
     "academics.stationery": [
         """
-        You don't need to buy any books or other stationery related to your courses.\n
-        We have a huge collection at the library which is sufficient for all the students of a course.\n
-        You can also find PDF version of books available on the internet.\n
-        Other stationery items can easily be purchased at the local store or ordered online.
+You don't need to buy any books or other stationery related to your courses.\n
+We have a huge collection at the library which is sufficient for all the students of a course.\n
+You can also find PDF version of books available on the internet.\n
+Other stationery items can easily be purchased at the local store or ordered online.
         """
     ],
     "academics.studying": [
         """
-        It depend on the person. But combining classes, assignments, quizzes and tests it takes around 50-55 hours every week.
+It depend on the person. But combining classes, assignments, quizzes and tests it takes around 50-55 hours every week.
         """
     ],
     "hostel.life": [
         """
-        The hostels at  <b> IIT Mandi </b> are some of the best hostels you can find in the country. The hostels are equipped with:\n
-        <u>Hostels are alloted Randomly to freshers and sharing room is there in first year , 2 - 3 students in one room</u> \n
-        <b>Yaar baaki saare city wale colleges to aise hi hote hain, kya padhe kya nahi padhe sab bhool jaenge.Lekin iss jagah ko nhi bhool paenge, ye jagah bahut hi faad hain, aur sabse alag hain!\n</b>
-        <a href="https://gymkhana.iitmandi.co.in/hostel.html">Visit</a> 
+The hostels at  <b> IIT Mandi </b> are some of the best hostels you can find in the country. The hostels are equipped with:\n
+<u>Hostels are alloted Randomly to freshers and sharing room is there in first year , 2 - 3 students in one room</u> \n
+<b>Yaar baaki saare city wale colleges to aise hi hote hain, kya padhe kya nahi padhe sab bhool jaenge.Lekin iss jagah ko nhi bhool paenge, ye jagah bahut hi faad hain, aur sabse alag hain!\n</b>
+<a href="https://gymkhana.iitmandi.co.in/hostel.html">Visit</a> 
         """
+    ],
+
+    "hikking.trekking":[
+    """
+For an IIT in the lap of Himalayas, a full-fledged <b> Hiking and Trekking club </b> caters to the spirit of adventure that resides in the students of IIT Mandi\n
+• HnT Club commits to climbing challenging Himalayan pinnacles and experience hiking together\n
+• The club provides a platform for adventure enthusiasts to experience the untouched beauty of Himachal Pradesh.
+<a href="https://hnt.iitmandi.co.in/index.html"> Visit </a>
+
+    """
+    ],
+
+    "fest.exodia":[
+    """
+<b>Exodia is the annual technical cum cultural fest of IIT Mandi</b>. It is a three-day long event held towards the start of March\n
+It is one of the biggest events of Himachal Pradesh, which gathers a lot of crowd from schools and colleges of North India \n
+Started in 2012 by a bunch of enthusiast IITians, it is a student-run non-profit organization that caters primarily to the youth \n
+    """
+    ],
+
+    "fest.ranneeti":[
+"""
+<b>Rann-Neeti</b> is the Annual Inter College Sports Fest of IIT Mandi organised by Student Gymkhana of IIT Mandi\n
+It is a three-day long event held every year in the month of September in which college from states all over the nation participate.\n       
+"""
+    ],
+
+    "clubs.robotronics":[
+"""
+• Robotronics Club is the official club under Science and Technology Council, IIT Mandi\n
+• It is one of the most active clubs created to bring out the creativity among the students and make them familiar with the ever growing world of Robotics\n
+• The club provides an entry point and a platform to the students where they can come and learn this amazing field of technology\n
+You can see interesting <a href="https://youtu.be/SNDC7iYYzPQ"> projects</a> by Robotronics club IIT MANDI.
+"""
+    ],
+
+    "clubs.music":[
+"""
+Music Club of IIT Mandi is an organisation which consists of people passionate about music\n.
+It regularly gives performances during major campus events and also conducts many competitions throughout the year\n
+It is committed to help students inculcate and improve their skills in music.Music Club strives to provide a platform for the students to express their musical talent, be it singing, playing instruments, sound mixing, etc. Its mission is to help all students to develop good musical knowledge and apppreciate the diverse music present in the world!\n
+"""
+    ],
+
+    "clubs.heuristics":[
+"""
+At <b>Heuristics</b> we focus on enhancing the culture of Data Science, Machine Learning at <u>IIT Mandi</u>\n
+• It also expands to solve complex optimization problems\n
+• It underlies the whole field of Artificial Intelligence and the computer simulation of thinking, as they may be used in situations where there are no known algorithms. We organize regular events, challenges and workshops on the above mentioned topics\n
+• We Often Organise Machine Learning Competitions, Hacking Competitions And Other Interesting Challenges For Our Community And Strongly Encourage Students To Participate And Learn
+<a href="https://pc.iitmandi.co.in/heuristics/HTML/"> Visit </a>
+
+"""
+    ],
+
+
+    "clubs.kamandprompt":[
+"""
+<b>KamandPrompt</b> is the Programming Club of IIT Mandi\n
+• We are responsible for creating an engaging coding culture \n
+• We try innovate and foster technical activities and create an engaging coding culture in the fields like Competitive Programming and Development\n
+<a href="https://pc.iitmandi.co.in/"> Visit </a>
+
+""", imageurls["clubs.kamandprompt"]
+    ],
+
+    "oas":[
+"""
+
+<a href="http://oas.iitmandi.ac.in/"> Visit </a>
+"""
+],
+
+    "clubs.dance":[
+
+"""
+<b>UDC, the dance club of IIT Mandi</b>\n
+• We enjoy and put up a huge array of events throughout the year\n
+• We dance, we treat and we share\n
+ The club aims to promote the culture and spirit of dance in the college, and motivate all dance enthusiasts to share their talent. We host a variety of workshops, perform flash mobs, and conduct competitions throughout the year\n
+• To follow us, see the links provided\n
+• For any queries Contact: Anooshka Bajaj :- 9501902410 Pratiksha Jain :- 8130476897 Institute Dance Secretary IIT Mandi\n
+• Email:- danceclubiitmandi@gmail.com \n
+• Follow us on Instagram :- @udc.iitmandi\n
+
+"""
+    ],
+
+    "induction.program":[
+"""    
+Induction program is a great initiative where the freshmen will be made familiar with the college, societites, clubs and also their fellow beings\n
+There would be lot of trips and fun activities over 5 Week Induction programme. It would be most memorable period in your entire stay at College\n
+Students are mentored in small groups of 20 by faculty, and not by external experts. This facilitates bonding
+between students and faculty which enriches the rest of the 4 years.
+• There is great emphasis on the excitement of engineering, leading into the regular curriculum.
+• There is considerable emphasis on the creative arts and sports as well for holistic development of the students.
+• The unique Himalayan location of IIT Mandi facilitates outreach activities directed towards the Himachali community
+"""
+],
+
+    "clubs.ecell":[
+"""
+E-Cell is a holographic abbreviation adopted by the <b>entrepreneurship club of IIT Mandi</b>\n
+It's an alumnus initiation and currently is the stewardship of a team of five inter-disciplinary students with the mentorship of Dr. Satvasheel Powar, churning their ideas to reach the various aspects of what lies in this "business" of reaching the society\n
+And as the name celebrates our crazy love for subjects related to business and its disciplinaries we always strive to give a glimpse of the potions of business by conducting multifarious of events\n
+<a href="https://ecell.iitmandi.ac.in/">Visit E-Cell</a>
+"""
     ]
+
+
 }
 
 answers_collection = db.collection(u'answers')
@@ -270,7 +380,7 @@ def add_doc(intent,val):
         payload["imgrefs"] = []
     answers_collection.document(intent).set(payload)
 
-add_data(dict_intents)
+# add_data(dict_intents)
 # add_doc("intent_name",["reply_text","img_ref1","img_ref2","img_ref3"])
 
-print("db updated successfuly")
+# print("db updated successfuly")
