@@ -28,19 +28,19 @@ Everything is relative and dependent on your batch's performance. Although, if y
 """
     ],
     "branchchange.criteria": [
-"""
+        """
 • The student will have to be in good <b>academic standing</b>, having done the full complement of courses and having no backlog. The decision on the student’s application will be made only after the grades of the second semester are received and the CGPA at the end of the semester will be the relevant CGPA.\n
 • <u><b>Branch change</b></u> applications will be considered strictly in order of merit as established by the CGPA and only to the extent of the applicant’s choices and in the order of the preferences expressed in the application\n
 • The top- ranking student of each discipline may be awarded a branch change if she/he has a CGPA of at least 8.0.\n
 • The strength of any branch shall not be allowed to fall below a minimum strength of 20 students because of the branch change\n
 """
-        ],
+    ],
     "hostel.rooms": [
         """
 Hostels have rooms of different sizes, single, double and triple occupancy.  
 First year students usually get a shared room.In the subsequent years, you may get a single room.
-There is a common washroom for the whole floor",imageurls["tripleroom_url"]  ,imageurls["doubleroom_url"]
-"""
+There is a common washroom for the whole floor
+""", imageurls["tripleroom_url"], imageurls["doubleroom_url"]
     ],
     "hostel.carry": [
         """
@@ -80,7 +80,7 @@ We have a bus stop in the north campus near the A10 building and in the south ca
 """
     ],
     "campus.mess": [
-"""
+        """
 We have several messes in our campus D1,D2 in the south campus and Pine,Oak in the North Campus."
 The mess food is also good
 """, imageurls["mess_url"]
@@ -135,25 +135,23 @@ available in most hostels. There is also Swimming pool, gym and yoga room etc.
     "programming.development": ["""
     GSOC ROCKS
     """],
-    "programming.culture": [
-"""
+    "programming.culture": ["""
     Bhut mast hai Bhai
 """],
-
     "programming.compi": [
-"""
+        """
 • Try to follow "C++ for dummies". Focus on first 2 units of the book \n
 • You don't need to buy the book, just download pdf version of the book from the internet\n
 Happy coding 🙂
-"""],
-
-    "programming.os": [
 """
+    ],
+    "programming.os": [
+        """
 • For good programming practices, you'll need to use ubuntu/unix/linux OSes\n
 • Working on linux is <b>faster and more secure</b> and comes with more support.\n
 • Please <a href = "http://blog.pc.iitmandi.co.in/Dual-Boot/">Vist</a> for proper guide \n
 """
-],
+    ],
     "programming.laptop": [
         """
 <u><b>Guidelines to buy a perfect laptop</b></u>\n
@@ -218,7 +216,6 @@ Semiconductors, HPCL and OLX People.\n
         Most of the companies allow for a CGPA greater than 8.
         """
     ],
-
     "academics.professors": [
         """
         It varies from professor to professor. Some are of very good nature and empathetic but some are a bit orthodox and expect a lot from their students.
@@ -238,7 +235,6 @@ Semiconductors, HPCL and OLX People.\n
         Other stationery items can easily be purchased at the local store or ordered online.
         """
     ],
-
     "academics.studying": [
         """
         It depend on the person. But combining classes, assignments, quizzes and tests it takes around 50-55 hours every week.
@@ -256,15 +252,25 @@ Semiconductors, HPCL and OLX People.\n
 
 answers_collection = db.collection(u'answers')
 
+
 def add_data(dict_intents):
-    print("I am in add_data function")
     for key, val in dict_intents.items():
-        payload = {"intent":key,"text":val[0]}
-        if(len(val)>1):
+        payload = {"intent": key, "text": val[0]}
+        if (len(val) > 1):
             payload["imgrefs"] = val[1:]
         else:
             payload["imgrefs"] = []
-        answers_collection.add(payload)
+        answers_collection.document(key).set(payload)
+
+def add_doc(intent,val):
+    payload = {"intent": intent, "text": val[0]}
+    if (len(val) > 1):
+        payload["imgrefs"] = val[1:]
+    else:
+        payload["imgrefs"] = []
+    answers_collection.document(intent).set(payload)
 
 add_data(dict_intents)
+# add_doc("intent_name",["reply_text","img_ref1","img_ref2","img_ref3"])
+
 print("db updated successfuly")
