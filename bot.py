@@ -81,6 +81,8 @@ def _help(update,context):
     help_text = "Hey! This is a help text"
     context.bot.send_message(chat_id = update.effective_chat.id,text = help_text)
 
+def _mess(update,context):
+    context.bot.send_document(chat_id = update.effective_chat.id,document = open("mess.pdf", 'rb'))
 
 def location_handler(update,context):
     print("in location handler")
@@ -186,7 +188,7 @@ def error(update,context):
 
 if __name__ == "__main__":
 
-    url_for_webhook = "https://48a280b28efe.ngrok.io/"
+    url_for_webhook = "https://59748f740b40.ngrok.io/"
     bot = Bot(TOKEN)
     bot.set_webhook(url_for_webhook + TOKEN)
 
@@ -195,6 +197,7 @@ if __name__ == "__main__":
     dp.add_handler(CommandHandler("help", _help))
     dp.add_handler(CommandHandler("clubs", clubs))
     # dp.add_handler(CommandHandler("feedback", _feedback))
+    dp.add_handler(CommandHandler("mess", _mess))
     dp.add_handler(CommandHandler("pathtoiitmandi", pathtoiitmandi))
     dp.add_handler(MessageHandler(Filters.text, dialogflow_connector))
     dp.add_handler(MessageHandler(Filters.sticker, echo_sticker))
@@ -206,7 +209,8 @@ if __name__ == "__main__":
     bot.set_my_commands([
         ["clubs","get to know about clubs"],
         ["pathtoiitmandi","Best way to travel to IIT MANDI from your location"],
-        ["help","Guide to Bot"]
+        ["help","Guide to Bot"],
+        ["mess","Get mess menu"]
     ])
 
     app.run(port=8443,debug=True)
