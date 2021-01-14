@@ -80,7 +80,7 @@ We have a bus stop in the north campus near the A10 building and in the south ca
 """
     ],
     "campus.mess": [
-        """
+"""
 We have several messes in our campus D1,D2 in the south campus and Pine,Oak in the North Campus."
 The mess food is also good
 """, imageurls["mess_url"]
@@ -136,28 +136,10 @@ available in most hostels. There is also Swimming pool, gym and yoga room etc.
     GSOC ROCKS
     """],
     "programming.culture": [
-        """
-The coding culture in <b>IIT Mandi</b> is very good. Any student can learn to code here if interested.\n
-There is programming club called <b>KamandPrompt</b>.This help us in getting started with coding and help us through the journey. They organise various competition to test the coding skills.\n
-The seniors will willingly help you with any of your doubts.\n
-Moreover with liberal branch change policy,Non CSE student can change the branch to CSE very easily.\n
-Lets take a look at our <b>GSOC</b> Stats compare to new IITs:-\n
-GSoC selections for 2020:\n
-Indore : 3 students\n
-Ropar : 2 students\n
-Patna : 6 students\n
-Hyderabad : 1 student\n
-Bhubaneshwar : 1 student\n
-Gandhinagar : Noone\n
-Mandi : <b>9 students + 6 mentors</b>\n
-We are improving upon ICPC year by year.\n
-Open source culture is amazing at our college as shown by GSoC selections. Apart from the GSoC selections, many were also selected in Linux community bridge, which is an equally prestigious program.\n
-<a href=”https://pc.iitmandi.co.in/icpc/hof.html”>Reference1</a>
-<a href=”https://pc.iitmandi.co.in/gsoc/”>Reference2</a>
-
-Happy coding 🙂
 """
-    ],
+    Bhut mast hai Bhai
+"""],
+
     "programming.compi": [
 """
 • Try to follow "C++ for dummies". Focus on first 2 units of the book \n
@@ -275,6 +257,7 @@ Semiconductors, HPCL and OLX People.\n
 answers_collection = db.collection(u'answers')
 
 def add_data(dict_intents):
+    print("I am in add_data function")
     for key, val in dict_intents.items():
         payload = {"intent":key,"text":val[0]}
         if(len(val)>1):
@@ -284,3 +267,4 @@ def add_data(dict_intents):
         answers_collection.add(payload)
 
 add_data(dict_intents)
+print("db updated successfuly")

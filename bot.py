@@ -17,8 +17,8 @@ logger = logging.getLogger(__name__)
 
 
 #Telegram Bot Token
-# TOKEN = "1474907865:AAGqLgIV9keqdeeUVWNwO2svN2uFqx-kwLs" #stresstest_bot
-TOKEN = "1531582165:AAHNtmQ4lyWZ55Rkf0Hs9KxzcB0woGGeX0E" #iitmandi_bot
+TOKEN = "1474907865:AAGqLgIV9keqdeeUVWNwO2svN2uFqx-kwLs" #stresstest_bot
+# TOKEN = "1531582165:AAHNtmQ4lyWZ55Rkf0Hs9KxzcB0woGGeX0E" #iitmandi_bot
 # TOKEN="1546162713:AAEnv2MvukJma18_GuVqCF92NUaFYITwlBc" #KDbot
 # TOKEN = "1599589352:AAGzf5C0EjT53FsZH63_mfcdlXbJh_vmEs8" #prakharuniyalbot
 
@@ -40,7 +40,11 @@ for doc in answers_collection.get():
 
 rec = sr.Recognizer()
 
-topics_keyboard = []
+topics_keyboard = [
+    ['Programming Club', 'Heuristics Club'], 
+    ['Robotronics Club', 'Space Technology and Astronomy Cell', 'Yantrik Club'], 
+    ['Entrepreneurship Cell', 'Nirmaan Club', 'Literary Society']
+]
 
 app = Flask(__name__)
 
@@ -61,6 +65,9 @@ def webhook():
 def start(update, context):
     print(update)
     author = update.message.from_user.first_name
+    f = open('usernames.txt', 'a')
+    f.write(author+'\n')
+    f.close()
     reply = "Hi! <b>{}</b>\n".format(author)
     reply+= welcome_msg
     context.bot.send_photo(chat_id = update.effective_chat.id,
@@ -73,6 +80,7 @@ def clubs(update,context):
 def _help(update,context):
     help_text = "Hey! This is a help text"
     context.bot.send_message(chat_id = update.effective_chat.id,text = help_text)
+
 
 def location_handler(update,context):
     print("in location handler")
@@ -99,6 +107,7 @@ def dialogflow_connector(update,context):
     if(intent in dict_intents):
         intent_response = answers_collection.where('intent', '==', intent).get()[0]
         reply_text = intent_response.get('text')
+        # print(reply_text)
         imgrefs = intent_response.get('imgrefs')
         context.bot.send_message(chat_id=update.effective_chat.id,
                                  text= reply_text,
@@ -177,7 +186,7 @@ def error(update,context):
 
 if __name__ == "__main__":
 
-    url_for_webhook = "https://3f9534118fdb.ngrok.io/"
+    url_for_webhook = "https://48a280b28efe.ngrok.io/"
     bot = Bot(TOKEN)
     bot.set_webhook(url_for_webhook + TOKEN)
 
@@ -185,6 +194,7 @@ if __name__ == "__main__":
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("help", _help))
     dp.add_handler(CommandHandler("clubs", clubs))
+    # dp.add_handler(CommandHandler("feedback", _feedback))
     dp.add_handler(CommandHandler("pathtoiitmandi", pathtoiitmandi))
     dp.add_handler(MessageHandler(Filters.text, dialogflow_connector))
     dp.add_handler(MessageHandler(Filters.sticker, echo_sticker))
@@ -192,5 +202,11 @@ if __name__ == "__main__":
     dp.add_handler(MessageHandler(Filters.voice, voice_to_text))
     dp.add_handler(MessageHandler(Filters.audio, voice_to_text))
     dp.add_error_handler(error)
+
+    bot.set_my_commands([
+        ["clubs","get to know about clubs"],
+        ["pathtoiitmandi","Best way to travel to IIT MANDI from your location"],
+        ["help","Guide to Bot"]
+    ])
 
     app.run(port=8443,debug=True)

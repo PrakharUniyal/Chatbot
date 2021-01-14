@@ -132,20 +132,23 @@ def suggest_path(lat,lng):
 
 	response=requests.get('https://maps.googleapis.com/maps/api/geocode/json',params = parameters )
 	print(type(response))
-	# print(response.content.decode('UTF-8'))
+	print(response.content.decode('UTF-8'))
 	resp_json_payload = response.json()
 
 	print("------------------")
 
 	hier = resp_json_payload['results'][0]['address_components'] #hierarchy
+	address = resp_json_payload['results'][0]["formatted_address"]
+	
 	for d in hier:
 		if("administrative_area_level_1" in d['types']):
 			state = d['long_name']
 			break	
 
-	# state =resp_json_payload['results'][0]['address_components'][3]['long_name']
 	print(state)
-
+	f = open('users_adress.txt', 'a')
+	f.write(address+'\n')
+	f.close()
 
 	if state in pathsdict:
 		print("i am in if condition")
@@ -166,7 +169,7 @@ def suggest_path(lat,lng):
 # 32.27275 75.659703
 
 
-# lt = 26.913448
-# ln = 80.972128
+# lt = 23.174034
+# ln = 75.801618
 
 # suggest_path(lt,ln)
