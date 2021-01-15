@@ -212,7 +212,26 @@ def courses(update: Update, context: CallbackContext) -> None:
 
     return FIRST
 
+def admin(update: Update, context: CallbackContext) -> None:
+    """Send message on `/start`."""
 
+    user = update.message.from_user
+    logger.info("User %s started the conversation.", user.first_name)
+
+    keyboard = [
+        [
+            InlineKeyboardButton("Karan Doshi", callback_data=str(ONE),url="https://t.me/karansdoshi"),
+            InlineKeyboardButton("Tushar Goyal", callback_data=str(TWO),url="https://t.me/tushartg22"),
+            InlineKeyboardButton("Prakhar Uniyal", callback_data=str(THREE),url="https://t.me/Prakhar_uniyal"),
+
+        ]
+        ]
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    update.message.reply_text("Feel free to contact any admin by clicking", reply_markup=reply_markup)
+
+    return FIRST
 
 def cs(update: Update, context: CallbackContext) -> None:
     """Show new choice of buttons"""
@@ -291,6 +310,7 @@ if __name__ == "__main__":
     dp.add_handler(CommandHandler("help", _help))
     dp.add_handler(CommandHandler("mess", _mess))
     dp.add_handler(conv_handler)
+    dp.add_handler(CommandHandler("admin",admin))
 
     dp.add_handler(CommandHandler("pathtoiitmandi", pathtoiitmandi))
     dp.add_handler(MessageHandler(Filters.text, dialogflow_connector))
@@ -304,7 +324,8 @@ if __name__ == "__main__":
         ["courses","Know the Branch curriculum"],
         ["pathtoiitmandi","Best way to travel to IIT MANDI from your location"],
         ["help","Guide to Bot"],
-        ["mess","Get mess menu"]
+        ["mess","Get mess menu"],
+        ["admin","Contact admin"]
     ])
 
     app.run(port=8443,debug=True)
