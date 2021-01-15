@@ -1,7 +1,8 @@
 import logging
 from flask import Flask, request
 from telegram.ext import Updater,CommandHandler,MessageHandler,Filters, Dispatcher
-from telegram import ReplyKeyboardMarkup,Bot,Update,ParseMode
+from telegram.ext import CallbackQueryHandler,ConversationHandler,CallbackContext
+from telegram import Bot,Update,ParseMode,InlineKeyboardButton, InlineKeyboardMarkup
 from utils import get_reply
 from firebaseutils import answers_collection
 from location import suggest_path
@@ -17,9 +18,9 @@ logger = logging.getLogger(__name__)
 
 
 #Telegram Bot Token
-TOKEN = "1474907865:AAGqLgIV9keqdeeUVWNwO2svN2uFqx-kwLs" #stresstest_bot
+#TOKEN = "1474907865:AAGqLgIV9keqdeeUVWNwO2svN2uFqx-kwLs" #stresstest_bot
 # TOKEN = "1531582165:AAHNtmQ4lyWZ55Rkf0Hs9KxzcB0woGGeX0E" #iitmandi_bot
-# TOKEN="1546162713:AAEnv2MvukJma18_GuVqCF92NUaFYITwlBc" #KDbot
+TOKEN="1546162713:AAEnv2MvukJma18_GuVqCF92NUaFYITwlBc" #KDbot
 # TOKEN = "1599589352:AAGzf5C0EjT53FsZH63_mfcdlXbJh_vmEs8" #prakharuniyalbot
 
 welcome_msg = """\n
@@ -29,9 +30,13 @@ Welcome to IIT Mandi!, Beautiful Campus is worth the wait🙂\n
 
 """
 
-imageurls = {
+urls = {
     "campus":
-    "https://i.ibb.co/8NbCyb9/campus.jpg"
+    "https://i.ibb.co/8NbCyb9/campus.jpg",
+    "cse_circ":"http://www.iitmandi.ac.in/academics/files/btech_cse.pdf",
+    "ee_circ":"http://www.iitmandi.ac.in/academics/files/btech_ee.pdf",
+    "me_circ":"http://www.iitmandi.ac.in/academics/files/btech_mech.pdf",
+    "ce_circ":"http://www.iitmandi.ac.in/academics/files/BTECH_CIVIL.pdf"
 }
 
 dict_intents = set()
@@ -40,11 +45,7 @@ for doc in answers_collection.get():
 
 rec = sr.Recognizer()
 
-topics_keyboard = [
-    ['Programming Club', 'Heuristics Club'], 
-    ['Robotronics Club', 'Space Technology and Astronomy Cell', 'Yantrik Club'], 
-    ['Entrepreneurship Cell', 'Nirmaan Club', 'Literary Society']
-]
+
 
 app = Flask(__name__)
 
@@ -71,11 +72,9 @@ def start(update, context):
     reply = "Hi! <b>{}</b>\n".format(author)
     reply+= welcome_msg
     context.bot.send_photo(chat_id = update.effective_chat.id,
-                        photo=imageurls["campus"],caption=reply,parse_mode=ParseMode.HTML)
+                        photo=urls["campus"],caption=reply,parse_mode=ParseMode.HTML)
 
-def clubs(update,context):
-    context.bot.send_message(chat_id=update.effective_chat.id, text="Choose Club/Society",
-        reply_markup=ReplyKeyboardMarkup(keyboard=topics_keyboard, one_time_keyboard=True))
+
 
 def _help(update,context):
     help_text = "Hey! This is a help text"
@@ -186,18 +185,113 @@ def error(update,context):
     """callback function for error handler"""
     logger.error("Update '%s' caused error '%s'", update, context.error)
 
-if __name__ == "__main__":
+# Stages
+FIRST, SECOND = range(2)
+# Callback data
+ONE, TWO, THREE, FOUR=range(4)
 
-    url_for_webhook = "https://59748f740b40.ngrok.io/"
+
+def courses(update: Update, context: CallbackContext) -> None:
+    """Send message on `/start`."""
+
+    user = update.message.from_user
+    logger.info("User %s started the conversation.", user.first_name)
+
+    keyboard = [
+        [
+            InlineKeyboardButton("CSE", callback_data=str(ONE)),
+            InlineKeyboardButton("EE", callback_data=str(TWO)),
+            InlineKeyboardButton("ME", callback_data=str(THREE)),
+            InlineKeyboardButton("CE", callback_data=str(FOUR)),
+        ]
+        ]
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    update.message.reply_text("Select a branch", reply_markup=reply_markup)
+
+    return FIRST
+
+
+
+def cs(update: Update, context: CallbackContext) -> None:
+    """Show new choice of buttons"""
+    query = update.callback_query
+    query.answer()
+
+    context.bot.send_document(chat_id = update.effective_chat.id,document =urls["cse_circ"])
+    query.edit_message_text(
+         text="Choose an option"
+    )
+    return ConversationHandler.END
+
+
+def ee(update: Update, context: CallbackContext) -> None:
+    """Show new choice of buttons"""
+    query = update.callback_query
+    query.answer()
+    context.bot.send_document(chat_id=update.effective_chat.id,
+                              document=urls["ee_circ"])
+
+
+
+    query.edit_message_text(
+        text="Choose an option"
+    )
+    return ConversationHandler.END
+
+
+def me(update: Update, context: CallbackContext) -> None:
+    """Show new choice of buttons"""
+    query = update.callback_query
+    query.answer()
+    context.bot.send_document(chat_id=update.effective_chat.id,
+                              document=urls["me_circ"])
+
+    query.edit_message_text(
+        text="Choose an option"
+    )
+    return ConversationHandler.END
+
+
+def ce(update: Update, context: CallbackContext) -> None:
+    """Show new choice of buttons"""
+    query = update.callback_query
+    query.answer()
+    context.bot.send_document(chat_id=update.effective_chat.id,
+                              document=urls["ce_circ"])
+
+    query.edit_message_text(
+        text="Choose an option"
+    )
+    return ConversationHandler.END
+
+if __name__ == "__main__":
+    conv_handler = ConversationHandler(
+        entry_points=[CommandHandler('courses', courses)],
+        states={
+            FIRST: [
+                CallbackQueryHandler(cs, pattern='^' + str(ONE) + '$'),
+                CallbackQueryHandler(ee, pattern='^' + str(TWO) + '$'),
+                CallbackQueryHandler(me, pattern='^' + str(THREE) + '$'),
+                CallbackQueryHandler(ce, pattern='^' + str(FOUR) + '$'),
+            ],
+
+
+        },
+        fallbacks=[CommandHandler('courses', courses)],
+    )
+
+    url_for_webhook = "https://a208055d7768.ngrok.io/"
     bot = Bot(TOKEN)
     bot.set_webhook(url_for_webhook + TOKEN)
 
     dp = Dispatcher(bot,None)
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("help", _help))
-    dp.add_handler(CommandHandler("clubs", clubs))
-    # dp.add_handler(CommandHandler("feedback", _feedback))
     dp.add_handler(CommandHandler("mess", _mess))
+    dp.add_handler(conv_handler)
+
     dp.add_handler(CommandHandler("pathtoiitmandi", pathtoiitmandi))
     dp.add_handler(MessageHandler(Filters.text, dialogflow_connector))
     dp.add_handler(MessageHandler(Filters.sticker, echo_sticker))
@@ -207,7 +301,7 @@ if __name__ == "__main__":
     dp.add_error_handler(error)
 
     bot.set_my_commands([
-        ["clubs","get to know about clubs"],
+        ["courses","Know the Branch curriculum"],
         ["pathtoiitmandi","Best way to travel to IIT MANDI from your location"],
         ["help","Guide to Bot"],
         ["mess","Get mess menu"]
