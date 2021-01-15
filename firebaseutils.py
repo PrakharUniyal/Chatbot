@@ -15,7 +15,12 @@ imageurls = {
     "https://scontent.fpnq4-1.fna.fbcdn.net/v/t1.0-9/122107179_3351982168247612_3874733656374962850_o.jpg?_nc_cat=111&ccb=2&_nc_sid=dbeb18&_nc_ohc=6K758cHE_JgAX_ZLsh3&_nc_ht=scontent.fpnq4-1.fna&oh=22e78e68d3b474f0894c1caab5264403&oe=60209BBC",
     "campus.mess":
     "https://scontent.fpnq4-1.fna.fbcdn.net/v/t1.0-9/122370919_2289019017911512_7022478130559725125_o.jpg?_nc_cat=100&ccb=2&_nc_sid=dbeb18&_nc_ohc=IRLhvHpHRY0AX8TOQ1J&_nc_ht=scontent.fpnq4-1.fna&oh=38da5aa0e4db37b35987e70fee6356f7&oe=601FFFB2",
-    "clubs.kamandprompt": "https://i.ibb.co/r2mBMvg/collage.jpg"
+    "clubs.kamandprompt": "https://i.ibb.co/r2mBMvg/collage.jpg",
+    "clubs.robotronics":"https://i.ibb.co/LdTggRf/collage-robo.jpg",
+    "clubs.litsoc":"https://i.ibb.co/DY0zR8F/bla.png",
+    "clubs.heuristics":"https://i.ibb.co/DQbWbPb/heuristics.png"
+
+
 }
 
 dict_intents = {
@@ -355,6 +360,13 @@ It's an alumnus initiation and currently is the stewardship of a team of five in
 And as the name celebrates our crazy love for subjects related to business and its disciplinaries we always strive to give a glimpse of the potions of business by conducting multifarious of events\n
 <a href="https://ecell.iitmandi.ac.in/">Visit E-Cell</a>
 """
+    ],
+    "clubs.litsoc":[
+    """
+The <b>Literary Society</b> is headed by Literary Secretary. It has three clubs under it as of now. 
+Each club has its own activities and funding for giving students exposure to various activities 
+through events both within and outside the Institute.
+    """
     ]
 
 
