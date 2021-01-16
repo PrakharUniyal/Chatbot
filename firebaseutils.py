@@ -18,10 +18,12 @@ imageurls = {
     "clubs.kamandprompt": "https://i.ibb.co/r2mBMvg/collage.jpg",
     "clubs.robotronics":"https://i.ibb.co/LdTggRf/collage-robo.jpg",
     "clubs.litsoc":"https://i.ibb.co/DY0zR8F/bla.png",
-    "clubs.heuristics":"https://i.ibb.co/DQbWbPb/heuristics.png"
-
-
+    "clubs.heuristics":"https://i.ibb.co/DQbWbPb/heuristics.png",
+    "clubs.stac": "https://i.ibb.co/3CfK1tQ/stac.jpg",
+    "fest.ranneeti":"https://i.ibb.co/CnRB1x8/ranneeti-collage.jpg",
+    "fest.exodia":"https://i.ibb.co/PGyDyqG/exodia-collage.jpg"
 }
+
 
 dict_intents = {
     "branchchange.prospects": [
@@ -138,11 +140,19 @@ available in most hostels. There is also Swimming pool, gym and yoga room etc.
 <a href="https://students.iitmandi.ac.in/gymkhana/">Read more</a>\n
 """
     ],
-    "programming.development": ["""
-    GSOC ROCKS
-    """],
-    "programming.culture": ["""
-    Bhut mast hai Bhai
+    "programming.development": [
+"""
+Open source culture is amazing at our college\n
+<b>GSOC ROCKS</b>\n
+The programming club regularly organise sessions to get us acclimitized with the open source \n
+"""],
+    "programming.culture": [
+"""
+The <b>Coding culture</b> here is overall very good and growing at a very fast pace\n
+• GSoC selections for IIT MANDI in 2020: Mandi : 9 students + 6 mentors\n
+• Open source culture is better at our college. as shown by GSoC selections. Apart from the GSoC selections, many were also selected in Linux community bridge, which is an equally prestigious program\n
+• <b>The programming club regularly organise sessions to get us acclimitized with the coding environment and make us know about the important techniques and algorithms to solve problems</b>\n
+
 """],
     "programming.compi": [
         """
@@ -270,14 +280,14 @@ For an IIT in the lap of Himalayas, a full-fledged <b> Hiking and Trekking club 
 <b>Exodia is the annual technical cum cultural fest of IIT Mandi</b>. It is a three-day long event held towards the start of March\n
 It is one of the biggest events of Himachal Pradesh, which gathers a lot of crowd from schools and colleges of North India \n
 Started in 2012 by a bunch of enthusiast IITians, it is a student-run non-profit organization that caters primarily to the youth \n
-    """
+    """, imageurls["fest.exodia"]
     ],
 
     "fest.ranneeti":[
 """
 <b>Rann-Neeti</b> is the Annual Inter College Sports Fest of IIT Mandi organised by Student Gymkhana of IIT Mandi\n
 It is a three-day long event held every year in the month of September in which college from states all over the nation participate.\n       
-"""
+""",imageurls["fest.ranneeti"]
     ],
 
     "clubs.robotronics":[
@@ -286,7 +296,7 @@ It is a three-day long event held every year in the month of September in which 
 • It is one of the most active clubs created to bring out the creativity among the students and make them familiar with the ever growing world of Robotics\n
 • The club provides an entry point and a platform to the students where they can come and learn this amazing field of technology\n
 You can see interesting <a href="https://youtu.be/SNDC7iYYzPQ"> projects</a> by Robotronics club IIT MANDI.
-"""
+""",imageurls["clubs.robotronics"]
     ],
 
     "clubs.music":[
@@ -305,7 +315,7 @@ At <b>Heuristics</b> we focus on enhancing the culture of Data Science, Machine 
 • We Often Organise Machine Learning Competitions, Hacking Competitions And Other Interesting Challenges For Our Community And Strongly Encourage Students To Participate And Learn
 <a href="https://pc.iitmandi.co.in/heuristics/HTML/"> Visit </a>
 
-"""
+""",imageurls["clubs.litsoc"]
     ],
 
 
@@ -366,9 +376,18 @@ And as the name celebrates our crazy love for subjects related to business and i
 The <b>Literary Society</b> is headed by Literary Secretary. It has three clubs under it as of now. 
 Each club has its own activities and funding for giving students exposure to various activities 
 through events both within and outside the Institute.
-    """
-    ]
+    """,imageurls["clubs.litsoc"]
+    ],
 
+    "clubs.stac":[
+"""
+<b>STAC</b> is a club where one can explore every corner of the technical knowledge he/she has!\n
+• Have a <a href="http://students.iitmandi.ac.in/~b18043/stac/#contact">look</a> towards what we do!\n
+• You are encouraged to knock our doors anytime. :)\n
+• If you feel like taking a session on Astrophysics/Robotics/Programming/Star-Gazing or anything related to STAC (Which is in fact everything ;) ), just write a mail to stac@students.iitmandi.ac.in.
+
+""", imageurls["clubs.stac"]
+    ]
 
 }
 
@@ -392,7 +411,7 @@ def add_doc(intent,val):
         payload["imgrefs"] = []
     answers_collection.document(intent).set(payload)
 
-# add_data(dict_intents)
+add_data(dict_intents)
 # add_doc("intent_name",["reply_text","img_ref1","img_ref2","img_ref3"])
 
-# print("db updated successfuly")
+print("db updated successfuly")
