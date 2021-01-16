@@ -411,7 +411,7 @@ def add_doc(intent,val):
         payload["imgrefs"] = []
     answers_collection.document(intent).set(payload)
 
-add_data(dict_intents)
+# add_data(dict_intents)
 # add_doc("intent_name",["reply_text","img_ref1","img_ref2","img_ref3"])
 
 print("db updated successfuly")
