@@ -309,6 +309,7 @@ def stacksearch(update, context):
                              parse_mode=ParseMode.HTML)
 
 if __name__ == "__main__":
+    
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('courses', courses)],
         states={
@@ -336,7 +337,7 @@ if __name__ == "__main__":
     dp.add_handler(CommandHandler("admin",admin))
 
     dp.add_handler(CommandHandler("pathtoiitmandi", pathtoiitmandi))
-    dp.add_handler(CommandHandler("sos",stacksearch))
+    dp.add_handler(CommandHandler("programming_doubt",stacksearch))
     dp.add_handler(MessageHandler(Filters.text, dialogflow_connector))
     dp.add_handler(MessageHandler(Filters.sticker, echo_sticker))
     dp.add_handler(MessageHandler(Filters.location,location_handler))
@@ -347,7 +348,7 @@ if __name__ == "__main__":
     bot.set_my_commands([
         ["courses","Know the Branch curriculum"],
         ["pathtoiitmandi","Best way to travel to IIT MANDI from your location"],
-        ["sos","Search stackoverflow for programming related doubts"],
+        ["programming_doubt","Search stackoverflow for programming related doubts"],
         ["help","Guide to Bot"],
         ["mess","Get mess menu"],
         ["admin","Contact admin"]
