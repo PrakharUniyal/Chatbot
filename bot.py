@@ -3,6 +3,7 @@ from flask import Flask, request
 from telegram.ext import Updater,CommandHandler,MessageHandler,Filters, Dispatcher
 from telegram.ext import CallbackQueryHandler,ConversationHandler,CallbackContext
 from telegram import Bot,Update,ParseMode,InlineKeyboardButton, InlineKeyboardMarkup
+from convohandler import courses,admin,cs,ce,me,ee
 from utils import get_reply
 from firebaseutils import answers_collection
 from location import suggest_path
@@ -17,12 +18,17 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Stages
+FIRST, SECOND = range(2)
+# Callback data
+ONE, TWO, THREE, FOUR=range(4)
+
 
 #Telegram Bot Token
 #TOKEN = "1474907865:AAGqLgIV9keqdeeUVWNwO2svN2uFqx-kwLs" #stresstest_bot
 # TOKEN = "1531582165:AAHNtmQ4lyWZ55Rkf0Hs9KxzcB0woGGeX0E" #iitmandi_bot
-# TOKEN="1546162713:AAEnv2MvukJma18_GuVqCF92NUaFYITwlBc" #KDbot
-TOKEN = "1599589352:AAGzf5C0EjT53FsZH63_mfcdlXbJh_vmEs8" #prakharuniyalbot
+TOKEN="1546162713:AAEnv2MvukJma18_GuVqCF92NUaFYITwlBc" #KDbot
+# TOKEN = "1599589352:AAGzf5C0EjT53FsZH63_mfcdlXbJh_vmEs8" #prakharuniyalbot
 
 welcome_msg = """\n
 <b>Congratulations!</b> for qualifying <u>JEE Advanced</u>\n  
@@ -30,15 +36,8 @@ This hard-earned laurel opens up for you the gateways of the IIT system where yo
 Welcome to IIT Mandi!, Beautiful Campus is worth the wait🙂\n
 
 """
+campus_url = "https://i.ibb.co/8NbCyb9/campus.jpg"
 
-urls = {
-    "campus":
-    "https://i.ibb.co/8NbCyb9/campus.jpg",
-    "cse_circ":"http://www.iitmandi.ac.in/academics/files/btech_cse.pdf",
-    "ee_circ":"http://www.iitmandi.ac.in/academics/files/btech_ee.pdf",
-    "me_circ":"http://www.iitmandi.ac.in/academics/files/btech_mech.pdf",
-    "ce_circ":"http://www.iitmandi.ac.in/academics/files/BTECH_CIVIL.pdf"
-}
 
 dict_intents = set()
 for doc in answers_collection.get():
@@ -73,7 +72,7 @@ def start(update, context):
     reply = "Hi! <b>{}</b>\n".format(author)
     reply+= welcome_msg
     context.bot.send_photo(chat_id = update.effective_chat.id,
-                        photo=urls["campus"],caption=reply,parse_mode=ParseMode.HTML)
+                        photo=campus_url,caption=reply,parse_mode=ParseMode.HTML)
 
 
 
@@ -186,105 +185,6 @@ def error(update,context):
     """callback function for error handler"""
     logger.error("Update '%s' caused error '%s'", update, context.error)
 
-# Stages
-FIRST, SECOND = range(2)
-# Callback data
-ONE, TWO, THREE, FOUR=range(4)
-
-
-def courses(update: Update, context: CallbackContext) -> None:
-    """Send message on `/start`."""
-
-    user = update.message.from_user
-    logger.info("User %s started the conversation.", user.first_name)
-
-    keyboard = [
-        [
-            InlineKeyboardButton("CSE", callback_data=str(ONE)),
-            InlineKeyboardButton("EE", callback_data=str(TWO)),
-            InlineKeyboardButton("ME", callback_data=str(THREE)),
-            InlineKeyboardButton("CE", callback_data=str(FOUR)),
-        ]
-        ]
-
-    reply_markup = InlineKeyboardMarkup(keyboard)
-
-    update.message.reply_text("Select a branch", reply_markup=reply_markup)
-
-    return FIRST
-
-def admin(update: Update, context: CallbackContext) -> None:
-    """Send message on `/start`."""
-
-    user = update.message.from_user
-    logger.info("User %s started the conversation.", user.first_name)
-
-    keyboard = [
-        [
-            InlineKeyboardButton("Karan Doshi", callback_data=str(ONE),url="https://t.me/karansdoshi"),
-            InlineKeyboardButton("Tushar Goyal", callback_data=str(TWO),url="https://t.me/tushartg22"),
-            InlineKeyboardButton("Prakhar Uniyal", callback_data=str(THREE),url="https://t.me/Prakhar_uniyal"),
-
-        ]
-        ]
-
-    reply_markup = InlineKeyboardMarkup(keyboard)
-
-    update.message.reply_text("Feel free to contact any admin by clicking", reply_markup=reply_markup)
-
-    return FIRST
-
-def cs(update: Update, context: CallbackContext) -> None:
-    """Show new choice of buttons"""
-    query = update.callback_query
-    query.answer()
-
-    context.bot.send_document(chat_id = update.effective_chat.id,document =urls["cse_circ"])
-    query.edit_message_text(
-         text="Choose an option"
-    )
-    return ConversationHandler.END
-
-
-def ee(update: Update, context: CallbackContext) -> None:
-    """Show new choice of buttons"""
-    query = update.callback_query
-    query.answer()
-    context.bot.send_document(chat_id=update.effective_chat.id,
-                              document=urls["ee_circ"])
-
-
-
-    query.edit_message_text(
-        text="Choose an option"
-    )
-    return ConversationHandler.END
-
-
-def me(update: Update, context: CallbackContext) -> None:
-    """Show new choice of buttons"""
-    query = update.callback_query
-    query.answer()
-    context.bot.send_document(chat_id=update.effective_chat.id,
-                              document=urls["me_circ"])
-
-    query.edit_message_text(
-        text="Choose an option"
-    )
-    return ConversationHandler.END
-
-
-def ce(update: Update, context: CallbackContext) -> None:
-    """Show new choice of buttons"""
-    query = update.callback_query
-    query.answer()
-    context.bot.send_document(chat_id=update.effective_chat.id,
-                              document=urls["ce_circ"])
-
-    query.edit_message_text(
-        text="Choose an option"
-    )
-    return ConversationHandler.END
 
 def stacksearch(update, context):
     query = ' '.join(context.args)
@@ -292,7 +192,7 @@ def stacksearch(update, context):
     if query == "":
         context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text="Send your queries like: '/sos how to make a chatbot'")
+            text="Send your queries like: '/programming_doubt how to make a chatbot'")
         return
     results = SITE.fetch('search', intitle=query)["items"]
 
@@ -307,6 +207,9 @@ def stacksearch(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id,
                              text=reply,
                              parse_mode=ParseMode.HTML)
+
+
+
 
 if __name__ == "__main__":
     
@@ -325,7 +228,7 @@ if __name__ == "__main__":
         fallbacks=[CommandHandler('courses', courses)],
     )
 
-    url_for_webhook = "https://736531926a42.ngrok.io/"
+    url_for_webhook = "https://a2e4e59086b6.ngrok.io/"
     bot = Bot(TOKEN)
     bot.set_webhook(url_for_webhook + TOKEN)
 
