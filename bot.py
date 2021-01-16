@@ -9,6 +9,7 @@ from location import suggest_path
 import speech_recognition as sr
 import os
 import numpy as np
+from stackapi import StackAPI
 
 
 #enable logging
@@ -20,8 +21,8 @@ logger = logging.getLogger(__name__)
 #Telegram Bot Token
 #TOKEN = "1474907865:AAGqLgIV9keqdeeUVWNwO2svN2uFqx-kwLs" #stresstest_bot
 # TOKEN = "1531582165:AAHNtmQ4lyWZ55Rkf0Hs9KxzcB0woGGeX0E" #iitmandi_bot
-TOKEN="1546162713:AAEnv2MvukJma18_GuVqCF92NUaFYITwlBc" #KDbot
-# TOKEN = "1599589352:AAGzf5C0EjT53FsZH63_mfcdlXbJh_vmEs8" #prakharuniyalbot
+# TOKEN="1546162713:AAEnv2MvukJma18_GuVqCF92NUaFYITwlBc" #KDbot
+TOKEN = "1599589352:AAGzf5C0EjT53FsZH63_mfcdlXbJh_vmEs8" #prakharuniyalbot
 
 welcome_msg = """\n
 <b>Congratulations!</b> for qualifying <u>JEE Advanced</u>\n  
@@ -45,7 +46,7 @@ for doc in answers_collection.get():
 
 rec = sr.Recognizer()
 
-
+SITE = StackAPI('stackoverflow')
 
 app = Flask(__name__)
 
@@ -87,7 +88,7 @@ def location_handler(update,context):
     print("in location handler")
     # print(update)
     lat = update.message.location.latitude
-    lng = update.message.location.longitude 
+    lng = update.message.location.longitude
 
     print(lat,lng)
 
@@ -127,7 +128,7 @@ def dialogflow_connector(update,context):
 
 
 def voice_to_text(update, context):
-    
+
     chat_id = update.message.chat_id
     file_name = str(chat_id) + '_' + str(update.message.from_user.id) + str(update.message.message_id)
     update.message.voice.get_file().download(file_name+'.ogg')
@@ -285,6 +286,28 @@ def ce(update: Update, context: CallbackContext) -> None:
     )
     return ConversationHandler.END
 
+def stacksearch(update, context):
+    query = ' '.join(context.args)
+
+    if query == "":
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text="Send your queries like: '/sos how to make a chatbot'")
+        return
+    results = SITE.fetch('search', intitle=query)["items"]
+
+    if results == []:
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text="Sorry I couldn't find anything related. You can google to find an answer on some other websites or post a question yourself.")
+        return
+
+    reply = u"""Here are some results:\n\n"""
+    for i in range(min(5,len(results))): reply+="""%s. <a href="%s">%s</a>\n\n""" %(str(i+1),results[i]["link"],results[i]["title"])
+    context.bot.send_message(chat_id=update.effective_chat.id,
+                             text=reply,
+                             parse_mode=ParseMode.HTML)
+
 if __name__ == "__main__":
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('courses', courses)],
@@ -301,7 +324,7 @@ if __name__ == "__main__":
         fallbacks=[CommandHandler('courses', courses)],
     )
 
-    url_for_webhook = "https://a208055d7768.ngrok.io/"
+    url_for_webhook = "https://736531926a42.ngrok.io/"
     bot = Bot(TOKEN)
     bot.set_webhook(url_for_webhook + TOKEN)
 
@@ -313,6 +336,7 @@ if __name__ == "__main__":
     dp.add_handler(CommandHandler("admin",admin))
 
     dp.add_handler(CommandHandler("pathtoiitmandi", pathtoiitmandi))
+    dp.add_handler(CommandHandler("sos",stacksearch))
     dp.add_handler(MessageHandler(Filters.text, dialogflow_connector))
     dp.add_handler(MessageHandler(Filters.sticker, echo_sticker))
     dp.add_handler(MessageHandler(Filters.location,location_handler))
@@ -323,6 +347,7 @@ if __name__ == "__main__":
     bot.set_my_commands([
         ["courses","Know the Branch curriculum"],
         ["pathtoiitmandi","Best way to travel to IIT MANDI from your location"],
+        ["sos","Search stackoverflow for programming related doubts"],
         ["help","Guide to Bot"],
         ["mess","Get mess menu"],
         ["admin","Contact admin"]
