@@ -175,42 +175,44 @@ def stacksearch(update, context):
                              parse_mode=ParseMode.HTML)
 
 
+url_for_webhook = os.getenv("url_for_webhook")
+bot = Bot(TOKEN)
+
+try:
+    bot.set_webhook(url_for_webhook + TOKEN)
+except Exception as e:
+    print(e)
+
+dp = Dispatcher(bot, None)
+
+dp.add_handler(CommandHandler("start", start))
+dp.add_handler(CommandHandler("help", _help))
+dp.add_handler(CommandHandler("mess", _mess))
+dp.add_handler(conv_handler)
+dp.add_handler(CommandHandler("admin", admin))
+dp.add_handler(CommandHandler("pathtoiitmandi", pathtoiitmandi))
+dp.add_handler(CommandHandler("programming_doubt", stacksearch))
+dp.add_handler(MessageHandler(Filters.text, texthandler))
+dp.add_handler(MessageHandler(Filters.sticker, echo_sticker))
+dp.add_handler(MessageHandler(Filters.location, location_handler))
+dp.add_handler(MessageHandler(Filters.voice, voice_to_text))
+dp.add_handler(MessageHandler(Filters.audio, voice_to_text))
+dp.add_error_handler(error)
+
+bot.set_my_commands(
+    [
+        ["courses", "Know the Branch curriculum"],
+        [
+            "pathtoiitmandi",
+            "Best way to travel to IIT MANDI from your location"
+        ],
+        [
+            "programming_doubt",
+            "Search stackoverflow for programming related doubts"
+        ], ["mess", "Get mess menu"], ["admin", "Contact admin"],
+        ["help", "Guide to Bot"]
+    ])
+
+
 if __name__ == "__main__":
-
-    url_for_webhook = os.getenv("url_for_webhook")
-    bot = Bot(TOKEN)
-
-    try:
-        bot.set_webhook(url_for_webhook + TOKEN)
-    except Exception as e:
-        print(e)
-
-    dp = Dispatcher(bot, None)
-    dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CommandHandler("help", _help))
-    dp.add_handler(CommandHandler("mess", _mess))
-    dp.add_handler(conv_handler)
-    dp.add_handler(CommandHandler("admin", admin))
-    dp.add_handler(CommandHandler("pathtoiitmandi", pathtoiitmandi))
-    dp.add_handler(CommandHandler("programming_doubt", stacksearch))
-    dp.add_handler(MessageHandler(Filters.text, texthandler))
-    dp.add_handler(MessageHandler(Filters.sticker, echo_sticker))
-    dp.add_handler(MessageHandler(Filters.location, location_handler))
-    dp.add_handler(MessageHandler(Filters.voice, voice_to_text))
-    dp.add_handler(MessageHandler(Filters.audio, voice_to_text))
-    dp.add_error_handler(error)
-
-    bot.set_my_commands(
-        [["courses", "Know the Branch curriculum"],
-         [
-             "pathtoiitmandi",
-             "Best way to travel to IIT MANDI from your location"
-         ],
-         [
-             "programming_doubt",
-             "Search stackoverflow for programming related doubts"
-         ], 
-         ["mess", "Get mess menu"], 
-         ["admin", "Contact admin"],
-         ["help", "Guide to Bot"]])
     app.run(port=8443, debug=True)
