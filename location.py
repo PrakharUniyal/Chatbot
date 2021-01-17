@@ -123,44 +123,28 @@ def guess(lat,lng):
 		return "Delhi"
 
 
+from geopy.geocoders import Nominatim   
+geolocator = Nominatim(user_agent="geoapiExercises")
+
 def suggest_path(lat,lng):
 
-	parameters = {
-	    "latlng": str(lat)+ "," + str(lng),
-	    "key": "AIzaSyCcch7hB-Li7LLL-CdjSt0m7wAEYeJbjkU"
-	}
-
-	response=requests.get('https://maps.googleapis.com/maps/api/geocode/json',params = parameters )
-	print(type(response))
-	print(response.content.decode('UTF-8'))
-	resp_json_payload = response.json()
-
-	print("------------------")
-
-	hier = resp_json_payload['results'][0]['address_components'] #hierarchy
-	address = resp_json_payload['results'][0]["formatted_address"]
-	
-	for d in hier:
-		if("administrative_area_level_1" in d['types']):
-			state = d['long_name']
-			break	
-
-	print(state)
-	f = open('users_adress.txt', 'a')
-	f.write(address+'\n')
-	f.close()
-
-	if state in pathsdict:
-		print("i am in if condition")
-		print(pathsdict[state])
-		return pathsdict[state]
-	else:
-		st = guess(lat,lng)
-		print("st: ",st)
-		ns = "Firstly Travel to " + st + " 🙂 \t"
-		reply = default.format(state) + ns + pathsdict[st]
-		print(reply)
-		return reply
+    location = geolocator.reverse(str(lat)+","+str(lng))
+    print(location)    
+    address = location.raw['address']      
+    state = address.get('state', '') 
+    print('State:',state)
+    
+    if state in pathsdict:
+        print("i am in if condition")
+        print(pathsdict[state])
+        return pathsdict[state]
+    else:
+        st = guess(lat,lng)
+        print("st: ",st)
+        ns = "Firstly Travel to " + st + " 🙂 \t"
+        reply = default.format(state) + ns + pathsdict[st]
+        print(reply)
+        return reply
 
 # 26.752396 88.445706 - Sweety
 # 26.913448 80.972128 - Prakhar
@@ -168,8 +152,8 @@ def suggest_path(lat,lng):
 # 23.174034 75.801618
 # 32.27275 75.659703
 
+lat = 26.752396
+lng = 88.445706
 
-# lt = 23.174034
-# ln = 75.801618
 
-# suggest_path(lt,ln)
+# suggest_path(lat,lng)
