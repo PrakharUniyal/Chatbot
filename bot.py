@@ -213,6 +213,15 @@ def stacksearch(update, context):
 
 if __name__ == "__main__":
     
+    url_for_webhook = "https://a2e4e59086b6.ngrok.io/"
+    bot = Bot(TOKEN)
+    try:
+    	bot.set_webhook(url_for_webhook + TOKEN)
+    except Exception as e:
+    	print(e)
+
+
+
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('courses', courses)],
         states={
@@ -227,10 +236,6 @@ if __name__ == "__main__":
         },
         fallbacks=[CommandHandler('courses', courses)],
     )
-
-    url_for_webhook = "https://a2e4e59086b6.ngrok.io/"
-    bot = Bot(TOKEN)
-    bot.set_webhook(url_for_webhook + TOKEN)
 
     dp = Dispatcher(bot,None)
     dp.add_handler(CommandHandler("start", start))
