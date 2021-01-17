@@ -3,26 +3,28 @@ from flask import Flask, request
 from telegram.ext import Updater,CommandHandler,MessageHandler,Filters, Dispatcher
 from telegram.ext import CallbackQueryHandler,ConversationHandler,CallbackContext
 from telegram import Bot,Update,ParseMode,InlineKeyboardButton, InlineKeyboardMarkup
-from utils import get_reply
-from firebaseutils import answers_collection
-from location import suggest_path
+from utils.dialogflow import get_reply
+from utils.firebase import answers_collection
+from utils.location import suggest_path
 import speech_recognition as sr
 import os
 import numpy as np
 from stackapi import StackAPI
+from dotenv import load_dotenv
+load_dotenv()
 
 
 #enable logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 #Telegram Bot Token
+os.environ
 #TOKEN = "1474907865:AAGqLgIV9keqdeeUVWNwO2svN2uFqx-kwLs" #stresstest_bot
 # TOKEN = "1531582165:AAHNtmQ4lyWZ55Rkf0Hs9KxzcB0woGGeX0E" #iitmandi_bot
 # TOKEN="1546162713:AAEnv2MvukJma18_GuVqCF92NUaFYITwlBc" #KDbot
-TOKEN = "1599589352:AAGzf5C0EjT53FsZH63_mfcdlXbJh_vmEs8" #prakharuniyalbot
+TOKEN = os.getenv("TOKEN")  #prakharuniyalbot
 
 welcome_msg = """\n
 <b>Congratulations!</b> for qualifying <u>JEE Advanced</u>\n  
@@ -324,7 +326,7 @@ if __name__ == "__main__":
         fallbacks=[CommandHandler('courses', courses)],
     )
 
-    url_for_webhook = "https://736531926a42.ngrok.io/"
+    url_for_webhook = "https://a4a395b062da.ngrok.io/"
     bot = Bot(TOKEN)
     bot.set_webhook(url_for_webhook + TOKEN)
 
