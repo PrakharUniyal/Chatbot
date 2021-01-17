@@ -1,54 +1,32 @@
-# Chatbot
+# Humanoid Chatbot
 
+A telegram bot for getting answers to a lot of frequently asked questions for freshers coming to IIT Mandi.
 
+## Technologies Used
+* Flask
+* ngrok
+* python-telegram-bot
+* Dialogflow
+* APIs: Firebase, Google Maps, Stack Exchange
 
-## Local Setup
+## How to run locally
+TODO
 
-1. Fork the repository.
+## Features
+Humanoid can answer various queries of freshers related to:
+* campus 
+* hostels, mess, and canteens
+* academics, and curriculum
+* clubs, societies, and fests
 
-2. Clone the forked repository.
+..and a lot of other amazing things at IIT Mandi. Also, it provides some additional features like:
+* Speech recognition for interaction.
+* Providing documents and other resources related to admission and academics.
+* Suggesting ideal travelling routes to the campus from the user's location.
+* Searching for posts on stackoverflow's websites for doubts related to programming.
 
-```console
-git clone https://github.com/PrakharUniyal/Chatbot.git
-```
+## How to contribute
+Clone the repo and feel free to send any Pull Requests that you feel to be constructive.
 
-3. Enter the repository.
-
-```console
-cd Chatbot
-```
-
-4. Create a python virtual environment with ```python=python3```.
-
-```console
-python3 -m venv myvenv
-```
-
-5. Activate the virtual environment.
-
-```console
-source myvenv/bin/activate
-```
-
-
-6. Install required python packages from requirements.txt.
-
-```console
-pip install -r requirements.txt
-```
-
-7. Generate Public URL for Webhook using ngrok
-
- - Run ngrok from command line (from the place where ngrok executable is stored)
-
-```console
-./ngrok http 8443
-```
-Copy the HTTPS Forwarding URL and Replace in [Code](https://github.com/PrakharUniyal/Chatbot/blob/main/bot.py#L82)
-
-
-8. Run application
-
-```console
-python3 bot.py
-```
+## Team Members
+[Tushar Goyal](https://github.com/tushargoyal22), [Karan Doshi](https://github.com/karansdoshi), [Prakhar Uniyal](https://github.com/PrakharUniyal)
