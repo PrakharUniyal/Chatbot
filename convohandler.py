@@ -3,18 +3,20 @@ from telegram.ext import CallbackQueryHandler,ConversationHandler,CallbackContex
 from telegram import Bot,Update,ParseMode,InlineKeyboardButton, InlineKeyboardMarkup
 
 
+
 urls = {
-    "cse_circ":"http://www.iitmandi.ac.in/academics/files/btech_cse.pdf",
-    "ee_circ":"http://www.iitmandi.ac.in/academics/files/btech_ee.pdf",
-    "me_circ":"http://www.iitmandi.ac.in/academics/files/btech_mech.pdf",
-    "ce_circ":"http://www.iitmandi.ac.in/academics/files/BTECH_CIVIL.pdf"
+    "cse_circ": "http://www.iitmandi.ac.in/academics/files/btech_cse.pdf",
+    "ee_circ": "http://www.iitmandi.ac.in/academics/files/btech_ee.pdf",
+    "me_circ": "http://www.iitmandi.ac.in/academics/files/btech_mech.pdf",
+    "ce_circ": "http://www.iitmandi.ac.in/academics/files/BTECH_CIVIL.pdf",
+    "dse_circ": "http://iitmandi.ac.in/academics/files/B.TechinDataScience.pdf"
 }
 
 
 # Stages
 FIRST, SECOND = range(2)
 # Callback data
-ONE, TWO, THREE, FOUR=range(4)
+ONE, TWO, THREE, FOUR, FIVE=range(5)
 
 
 def courses(update: Update, context: CallbackContext) -> None:
@@ -23,14 +25,13 @@ def courses(update: Update, context: CallbackContext) -> None:
     user = update.message.from_user
     # logger.info("User %s started the conversation.", user.first_name)
 
-    keyboard = [
-        [
-            InlineKeyboardButton("CSE", callback_data=str(ONE)),
-            InlineKeyboardButton("EE", callback_data=str(TWO)),
-            InlineKeyboardButton("ME", callback_data=str(THREE)),
-            InlineKeyboardButton("CE", callback_data=str(FOUR)),
-        ]
-        ]
+    keyboard = [[
+        InlineKeyboardButton("CSE", callback_data=str(ONE)),
+        InlineKeyboardButton("EE", callback_data=str(TWO)),
+        InlineKeyboardButton("ME", callback_data=str(THREE)),
+        InlineKeyboardButton("CE", callback_data=str(FOUR)),
+        InlineKeyboardButton("DSE", callback_data=str(FIVE))
+    ]]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -110,3 +111,29 @@ def ce(update: Update, context: CallbackContext) -> None:
         text="Choose an option"
     )
     return ConversationHandler.END
+
+
+def dse(update: Update, context: CallbackContext) -> None:
+    """Show new choice of buttons"""
+    query = update.callback_query
+    query.answer()
+    context.bot.send_document(chat_id=update.effective_chat.id,
+                              document=urls["dse_circ"])
+
+    query.edit_message_text(text="Choose an option")
+    return ConversationHandler.END
+
+
+conv_handler = ConversationHandler(
+    entry_points=[CommandHandler('courses', courses)],
+    states={
+        FIRST: [
+            CallbackQueryHandler(cs, pattern='^' + str(ONE) + '$'),
+            CallbackQueryHandler(ee, pattern='^' + str(TWO) + '$'),
+            CallbackQueryHandler(me, pattern='^' + str(THREE) + '$'),
+            CallbackQueryHandler(ce, pattern='^' + str(FOUR) + '$'),
+            CallbackQueryHandler(dse, pattern='^' + str(FIVE) + '$'),
+        ],
+    },
+    fallbacks=[CommandHandler('courses', courses)],
+)

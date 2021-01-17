@@ -1,16 +1,16 @@
 import logging
 from flask import Flask, request
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Dispatcher
-from telegram.ext import CallbackQueryHandler, ConversationHandler, CallbackContext
-from telegram import Bot, Update, ParseMode, InlineKeyboardButton, InlineKeyboardMarkup
-from convohandler import courses, admin, cs, ce, me, ee
-from utils import get_reply
-from firebaseutils import answers_collection
-from location import suggest_path
-import speech_recognition as sr
+from telegram import Bot, Update, ParseMode
+from convohandler import conv_handler,admin
+from utils.dialogflow import get_reply
+from utils.firebase import dict_intents, answers_collection,userlogs_collection,users_collection
+from utils.location import suggest_path
+from utils.stackoverflow import doubtsearch, suggestion
+from utils.speechrec import speech2text
 import os
 import numpy as np
-from stackapi import StackAPI
+
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -20,16 +20,7 @@ logging.basicConfig(
     level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Stages
-FIRST, SECOND = range(2)
-# Callback data
-ONE, TWO, THREE, FOUR = range(4)
-
 #Telegram Bot Token
-#TOKEN = "1474907865:AAGqLgIV9keqdeeUVWNwO2svN2uFqx-kwLs" #stresstest_bot
-# TOKEN = "1531582165:AAHNtmQ4lyWZ55Rkf0Hs9KxzcB0woGGeX0E" #iitmandi_bot
-# TOKEN = "1546162713:AAEnv2MvukJma18_GuVqCF92NUaFYITwlBc"  #KDbot
-# TOKEN = "1599589352:AAGzf5C0EjT53FsZH63_mfcdlXbJh_vmEs8" #prakharuniyalbot
 TOKEN = os.getenv("TOKEN")
 
 welcome_msg = """\n
@@ -39,21 +30,11 @@ Welcome to IIT Mandi!, Beautiful Campus is worth the wait🙂\n
 """
 campus_url = "https://i.ibb.co/8NbCyb9/campus.jpg"
 
-dict_intents = set()
-for doc in answers_collection.get():
-    dict_intents.add(doc.get('intent'))
-
-rec = sr.Recognizer()
-
-SITE = StackAPI('stackoverflow')
-
 app = Flask(__name__)
-
 
 @app.route('/')
 def index():
     return "Hello!"
-
 
 @app.route(f'/{TOKEN}', methods=['GET', 'POST'])
 def webhook():
@@ -68,9 +49,7 @@ def webhook():
 def start(update, context):
     print(update)
     author = update.message.from_user.first_name
-    f = open('usernames.txt', 'a')
-    f.write(author + '\n')
-    f.close()
+    users_collection.document(author).set({"name":author})
     reply = "Hi! <b>{}</b>\n".format(author)
     reply += welcome_msg
     context.bot.send_photo(chat_id=update.effective_chat.id,
@@ -80,9 +59,17 @@ def start(update, context):
 
 
 def _help(update, context):
-    help_text = "Hey! This is a help text"
-    context.bot.send_message(chat_id=update.effective_chat.id, text=help_text)
-
+    help_text = """
+• /courses: Know the course curriculum of various branches.\n
+• /pathtoiitmandi: Find the best way to travel to IIT MANDI from your location.\n
+• /programming_doubt: Get answers from stack overflow for your programming related doubts.\n
+• /mess: Get the mess menu.\n
+• /admin: Contact the administrators.\n
+• /help: Get details of features of this bot.\n
+    """
+    context.bot.send_message(chat_id=update.effective_chat.id,
+                             text=help_text,
+                             parse_mode=ParseMode.HTML)
 
 def _mess(update, context):
     context.bot.send_document(chat_id=update.effective_chat.id,
@@ -102,16 +89,12 @@ def location_handler(update, context):
                              text=best_path,
                              parse_mode=ParseMode.HTML)
 
-
-def dialogflow_connector(update, context):
+def texthandler(update, context):
 
     response = get_reply(update.message.text, update.message.chat_id)
     intent = response.intent.display_name
 
-    print("--------")
-    print(response)
-    print("intent:->", intent)
-    print("--------")
+    print("--------\n" ,response,"\nintent:->", intent, "\n--------")
 
     if (intent in dict_intents):
         intent_response = answers_collection.where('intent', '==',
@@ -128,58 +111,31 @@ def dialogflow_connector(update, context):
 
     else:
         if intent == "Default Fallback Intent":
-            f = open('logs.txt', 'a')
-            f.write(update.message.text + '\n')
-            f.close()
-        context.bot.send_message(chat_id=update.effective_chat.id,
+            document = {
+                "query": update.message.text,
+                "username": update.message.from_user.first_name
+            }
+            userlogs_collection.add(document)
+
+        elif not response.fulfillment_text:
+            context.bot.send_message(chat_id=update.effective_chat.id,
+                                     text="Sorry, I'm still learning about this.",
+                                     parse_mode=ParseMode.HTML)
+        else:
+            context.bot.send_message(chat_id=update.effective_chat.id,
                                  text=response.fulfillment_text,
                                  parse_mode=ParseMode.HTML)
-
 
 def voice_to_text(update, context):
 
     chat_id = update.message.chat_id
-    file_name = str(chat_id) + '_' + str(update.message.from_user.id) + str(
-        update.message.message_id)
+    file_name = str(chat_id)
     update.message.voice.get_file().download(file_name + '.ogg')
-    os.system('ffmpeg -i ' + file_name + '.ogg ' + file_name + '.wav')
-    os.system('rm ' + file_name + '.ogg')
-    harvard = sr.AudioFile(file_name + '.wav')
-    with harvard as source:
-        audio = rec.record(source)
 
-    message_text = rec.recognize_google(audio)
-
-    os.system('rm ' + file_name + '.wav')
-
-    response = get_reply(message_text, chat_id)
-    intent = response.intent.display_name
-
-    print("--------")
-    print(response)
-    print("intent:->", intent)
-    print("--------")
-
-    if (intent in dict_intents):
-        intent_response = answers_collection.where('intent', '==',
-                                                   intent).get()[0]
-        reply_text = intent_response.get('text')
-        imgrefs = intent_response.get('imgrefs')
-        context.bot.send_message(chat_id=update.effective_chat.id,
-                                 text=reply_text,
-                                 parse_mode=ParseMode.HTML)
-        for imgref in imgrefs:
-            context.bot.send_photo(chat_id=update.effective_chat.id,
-                                   photo=imgref)
-
-    else:
-        if intent == "Default Fallback Intent":
-            f = open('logs.txt', 'a')
-            f.write(update.message.text + '\n')
-            f.close()
-        context.bot.send_message(chat_id=update.effective_chat.id,
-                                 text=response.fulfillment_text,
-                                 parse_mode=ParseMode.HTML)
+    message_text = speech2text(file_name)
+    print(message_text)
+    update.message.text = message_text
+    texthandler(update, context)
 
 
 def echo_sticker(update, context):
@@ -210,20 +166,10 @@ def stacksearch(update, context):
             "Send your queries like: '/programming_doubt how to make a chatbot'"
         )
         return
-    results = SITE.fetch('search', intitle=query)["items"]
 
-    if results == []:
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text=
-            "Sorry I couldn't find anything related. You can google to find an answer on some other websites or post a question yourself."
-        )
-        return
+    results = doubtsearch(query)
+    reply = suggestion(results)
 
-    reply = u"""Here are some results:\n\n"""
-    for i in range(min(5, len(results))):
-        reply += """%s. <a href="%s">%s</a>\n\n""" % (
-            str(i + 1), results[i]["link"], results[i]["title"])
     context.bot.send_message(chat_id=update.effective_chat.id,
                              text=reply,
                              parse_mode=ParseMode.HTML)
@@ -231,25 +177,13 @@ def stacksearch(update, context):
 
 if __name__ == "__main__":
 
-    url_for_webhook = "https://a2e4e59086b6.ngrok.io/"
+    url_for_webhook = os.getenv("url_for_webhook")
     bot = Bot(TOKEN)
+
     try:
         bot.set_webhook(url_for_webhook + TOKEN)
     except Exception as e:
         print(e)
-
-    conv_handler = ConversationHandler(
-        entry_points=[CommandHandler('courses', courses)],
-        states={
-            FIRST: [
-                CallbackQueryHandler(cs, pattern='^' + str(ONE) + '$'),
-                CallbackQueryHandler(ee, pattern='^' + str(TWO) + '$'),
-                CallbackQueryHandler(me, pattern='^' + str(THREE) + '$'),
-                CallbackQueryHandler(ce, pattern='^' + str(FOUR) + '$'),
-            ],
-        },
-        fallbacks=[CommandHandler('courses', courses)],
-    )
 
     dp = Dispatcher(bot, None)
     dp.add_handler(CommandHandler("start", start))
@@ -257,10 +191,9 @@ if __name__ == "__main__":
     dp.add_handler(CommandHandler("mess", _mess))
     dp.add_handler(conv_handler)
     dp.add_handler(CommandHandler("admin", admin))
-
     dp.add_handler(CommandHandler("pathtoiitmandi", pathtoiitmandi))
     dp.add_handler(CommandHandler("programming_doubt", stacksearch))
-    dp.add_handler(MessageHandler(Filters.text, dialogflow_connector))
+    dp.add_handler(MessageHandler(Filters.text, texthandler))
     dp.add_handler(MessageHandler(Filters.sticker, echo_sticker))
     dp.add_handler(MessageHandler(Filters.location, location_handler))
     dp.add_handler(MessageHandler(Filters.voice, voice_to_text))
@@ -276,7 +209,8 @@ if __name__ == "__main__":
          [
              "programming_doubt",
              "Search stackoverflow for programming related doubts"
-         ], ["help", "Guide to Bot"], ["mess", "Get mess menu"],
-         ["admin", "Contact admin"]])
-
+         ], 
+         ["mess", "Get mess menu"], 
+         ["admin", "Contact admin"],
+         ["help", "Guide to Bot"]])
     app.run(port=8443, debug=True)
