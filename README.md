@@ -15,7 +15,7 @@ A telegram bot for getting answers to a lot of frequently asked questions for fr
 1. Clone the repository.
 2. Create an evironment using `venv`.
 3. Install required dependencies using pip from `requirements.txt`.
-4. Get a telegram bot token from the BotFather bot at telegram.
+4. Get a telegram bot token from the [BotFather](https://t.me/botfather) bot at telegram.
 5. Setup a proxy server using [ngrok](https://ngrok.com/download) and set the port number to be the same as chosen in your Flask server(only few ports are accepted by telegram eg-8443). The command for that is: `./ngrok http 8443`.
 6. Run the ngrok server and copy the forwarding URL of the form https://*randomseq*.ngrok.io/. This will be the URL for our webhook.
 7. Set the bot token and URL for webhook as environment variables in the .env file as follows: `TOKEN=<YOUR_TOKEN>` and `url_for_webhook=<URL>`.
