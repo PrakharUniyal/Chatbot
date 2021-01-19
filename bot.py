@@ -50,7 +50,12 @@ def start(update, context):
     print(update)
     author = update.message.from_user.first_name
     username = update.message.from_user.username
-    save = author + " @" + username 
+    save = author + "@"
+    if username:
+        save+= username
+    else:
+        save+= "username_not_set"
+
     users_collection.document(author).set({"name":save})
     reply = "Hi! <b>{}</b>\n".format(author)
     reply += welcome_msg
