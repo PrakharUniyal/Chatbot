@@ -8,7 +8,7 @@ A telegram bot for getting answers to a lot of frequently asked questions for fr
 * ngrok
 * python-telegram-bot
 * Dialogflow
-* APIs: Firebase, Google Maps, Stack Exchange
+* APIs: Firebase, Google Maps, Nominatim, Stack Exchange
 
 ## How to run locally
 
@@ -25,21 +25,22 @@ A telegram bot for getting answers to a lot of frequently asked questions for fr
 
 Humanoid can answer various queries of freshers related to:
 
-* campus
-* hostels, mess, and canteens
-* academics, and curriculum
+* hostels, mess
+* academics, and placements
 * clubs, societies, and fests
+* fees,labs
 
 ..and a lot of other amazing things at IIT Mandi. Also, it provides some additional features like:
 
 * Speech recognition for interaction.
-* Providing documents and other resources related to admission and academics.
+* Providing documents and other resources related to admission and branch curriculum.
 * Suggesting ideal travelling routes to the campus from the user's location.
 * Searching for posts on stackoverflow's websites for doubts related to programming.
 
 ## How to contribute
 
-Clone the repo and feel free to send any Pull Requests that you feel to be constructive.
+Clone the repo and feel free to send any Pull Requests that you feel to be constructive
+[Guidelines](https://github.com/PrakharUniyal/Chatbot/blob/main/CONTRIBUTING.md)
 
 ## Team Members
 
