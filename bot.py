@@ -49,7 +49,9 @@ def webhook():
 def start(update, context):
     print(update)
     author = update.message.from_user.first_name
-    users_collection.document(author).set({"name":author})
+    username = update.message.from_user.username
+    save = author + " @" + username 
+    users_collection.document(author).set({"name":save})
     reply = "Hi! <b>{}</b>\n".format(author)
     reply += welcome_msg
     context.bot.send_photo(chat_id=update.effective_chat.id,
